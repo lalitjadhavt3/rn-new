@@ -33,7 +33,7 @@ const CourseModal = ({modalVisible, setModalVisible}) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Select a Course</Text>
-          {courseList.map((item, index) => (
+          {courseList?.map((item, index) => (
             <TouchableOpacity
               key={item.id}
               style={styles.courseOption}

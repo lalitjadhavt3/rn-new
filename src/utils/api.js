@@ -1,5 +1,5 @@
 import axios from 'axios';
-const ENV = 'DEV';
+const ENV = 'PROD';
 const API_BASE_URL =
   ENV == 'PROD'
     ? 'https://srgeniusacademy.com/dashboard/'
