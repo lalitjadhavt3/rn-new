@@ -6,6 +6,7 @@ import {Person, Calendar} from '../assets/icons';
 import TimeTable from '../screens/TimeTable';
 import OfflineLecture from '../screens/OfflineLecture';
 import Register from '../screens/RegisterScreen';
+import ModalScreen from '../screens/ModalScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -31,6 +32,25 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
+        name="Account"
+        component={ProfileScreen}
+        initialParams={{itemId: 1}}
+        options={{
+          title: 'Account',
+          tabBarLabel: 'Account',
+          unmountOnBlur: true,
+          tabBarIcon: ({color, size}) => (
+            <Person width={20} height={20} fill={color} />
+          ),
+
+          tabBarBadgeStyle: {
+            backgroundColor: 'red',
+            color: 'white',
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
         name="RegisterScreen"
         component={Register}
         options={{
@@ -41,6 +61,7 @@ const BottomTabNavigator = () => {
           tabBarButton: () => null,
         }}
       />
+
       {/* 
     <Tab.Screen
      name='Join_Screen'
@@ -85,25 +106,6 @@ const BottomTabNavigator = () => {
       tabBarButton: () => null,
      })}
     /> */}
-      <Tab.Screen
-        name="Account"
-        component={ProfileScreen}
-        initialParams={{itemId: 1}}
-        options={{
-          title: 'Account',
-          tabBarLabel: 'Account',
-          unmountOnBlur: true,
-          tabBarIcon: ({color, size}) => (
-            <Person width={20} height={20} fill={color} />
-          ),
-
-          tabBarBadgeStyle: {
-            backgroundColor: 'red',
-            color: 'white',
-          },
-          headerShown: false,
-        }}
-      />
     </Tab.Navigator>
   );
 };

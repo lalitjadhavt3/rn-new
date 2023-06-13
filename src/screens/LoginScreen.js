@@ -45,7 +45,12 @@ const LoginScreen = ({navigation}) => {
                 'authToken',
                 response?.data?.data?.token,
               );
-              signIn(response?.data?.data?.id);
+              const userdata = {
+                userID: response?.data?.data?.id,
+                userName: username,
+                usertype: response?.data?.data?.usertype,
+              };
+              signIn(userdata);
               if (response.data.data?.usertype > 2) {
                 navigation.navigate('Main');
               } else {

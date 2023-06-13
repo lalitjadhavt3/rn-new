@@ -10,14 +10,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   Button,
   Platform,
   ScrollView,
   RefreshControl,
-  AsyncStorage,
 } from 'react-native';
-import {Images} from 'app-assets';
 import {AuthContext} from '../context/AuthContext';
 import {
   ExpandableCalendar,
@@ -28,115 +25,64 @@ import {
 import {agendaItems, getMarkedDates} from './mocks/agendaItems';
 import AgendaItem from './mocks/AgendaItem';
 import {getTheme, themeColor, lightThemeColor} from './mocks/theme';
-import {getStatusBarHeight} from 'app-common';
 import api from '../utils/api';
-import axios from 'axios';
+import CourseModal from '../components/CourseModal';
 const leftArrowIcon = require('../assets/img/previous.png');
 const rightArrowIcon = require('../assets/img/next.png');
 const ITEMS = agendaItems;
 const weekView = true;
 const TimeTable = ({t, navigation, props}) => {
-  const {user} = useContext(AuthContext);
+  const {user, signIn} = useContext(AuthContext);
   const [isLogin, setLogin] = useState(user);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshCount, setRefreshCount] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [lessonList, setLessonList] = useState([]);
 
-  const fetchData = async () => {
-    // Replace this URL with your API endpoint
-    const url = 'https://jsonplaceholder.typicode.com/todos/1';
+  useEffect(() => {
+    const extracted = new Date(Date.now());
+    const mon = extracted.getMonth() + '-' + extracted.getFullYear();
+    onDateChanged(extracted);
+  }, []);
 
-    try {
-      const response = await axios.get(url);
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
   };
+
+  useEffect(() => {
+    toggleModal();
+  }, [user.courseSelected]);
 
   const onRefresh = useCallback(() => {
-    console.log(refreshCount);
     setRefreshing(true);
-    fetchData().then(() => {
-      setRefreshing(false);
-      setRefreshCount(refreshCount + 1);
-    });
+    const extracted = new Date(Date.now());
+    const mon = extracted.getMonth() + '-' + extracted.getFullYear();
+    onDateChanged(extracted);
+    setRefreshCount(refreshCount + 1);
+    setRefreshing(false);
   }, [refreshCount]);
-  const onDateChanged = async d => {
-    console.log({currentDate: d});
-    try {
-      const response = await api.get(
-        '/student/apis/get_schedule.php?date=' + d,
-        {
+
+  let timeoutId;
+
+  const onDateChanged = d => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(async () => {
+      try {
+        const response = await api.get('/student/apis/get_schedule.php', {
           params: {
             date: d,
+            user: user.userID,
+            course: user.courseSelected,
           },
-        },
-      );
-      console.log(response);
-    } catch (error) {
-      // Handle the error
-      console.error(error);
-    }
+        });
+        setLessonList(response?.data?.data);
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      }
+    }, 1000); // Specify the debounce delay (in milliseconds)
   };
 
-  const mock =
-    refreshCount < 100
-      ? [
-          {
-            data: [
-              {
-                duration: '0.5h',
-                hour: '11am',
-                title: 'Offline Lecture',
-                link: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                username: user,
-                type: 'offline',
-              },
-            ],
-            title: '2023-05-22',
-          },
-          {
-            data: [
-              {
-                duration: '1h',
-                hour: '12pm',
-                title: 'Offline Lecture-2',
-                link: 'http://techslides.com/demos/sample-videos/small.mp4',
-                username: user,
-                type: 'offline',
-              },
-            ],
-            title: '2023-05-25',
-          },
-          {
-            data: [
-              {
-                duration: '1h',
-                hour: '12pm',
-                title: 'First Yoga',
-                link: '1234-1234',
-                username: user,
-                type: 'online',
-              },
-            ],
-            title: '2023-05-22',
-          },
-        ]
-      : [
-          {
-            data: [
-              {
-                duration: '1h',
-                hour: '11am',
-                title: 'Offline Lecture before refresh',
-                link: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                username: user,
-                type: 'offline',
-              },
-            ],
-            title: '2023-05-24',
-          },
-        ];
   const marked = useRef(getMarkedDates());
   const theme = useRef(getTheme());
   const todayBtnTheme = useRef({
@@ -165,55 +111,61 @@ const TimeTable = ({t, navigation, props}) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <View style={styles.container}>
-        {isLogin ? (
-          <>
-            <View style={styles.header}>
-              <View style={styles.header1}>
-                <Text style={styles.title}>TimeTable</Text>
+        {user?.courseSelected ? (
+          isLogin ? (
+            <>
+              <View style={styles.header}>
+                <View style={styles.header1}>
+                  <Text style={styles.title}>TimeTable</Text>
+                </View>
               </View>
-            </View>
-            <CalendarProvider
-              date={ITEMS[1]?.title}
-              onDateChanged={onDateChanged}
-              // onMonthChange={onMonthChange}
-              showTodayButton
-              // disabledOpacity={0.6}
-              theme={todayBtnTheme.current}
-              // todayBottomMargin={16}
-            >
-              {weekView ? (
-                <WeekCalendar firstDay={1} markedDates={marked.current} />
-              ) : (
-                <ExpandableCalendar
-                  theme={theme.current}
-                  firstDay={1}
-                  markedDates={marked.current}
-                  leftArrowImageSource={leftArrowIcon}
-                  rightArrowImageSource={rightArrowIcon}
-                  animateScroll
-                  // closeOnDayPress={false}
+              <CalendarProvider
+                date={ITEMS[1]?.title}
+                onDateChanged={onDateChanged}
+                // onMonthChange={onMonthChange}
+                showTodayButton
+                // disabledOpacity={0.6}
+                theme={todayBtnTheme.current}
+                todayBottomMargin={16}>
+                {weekView ? (
+                  <WeekCalendar firstDay={1} markedDates={marked.current} />
+                ) : (
+                  <ExpandableCalendar
+                    theme={theme.current}
+                    firstDay={1}
+                    markedDates={marked.current}
+                    leftArrowImageSource={leftArrowIcon}
+                    rightArrowImageSource={rightArrowIcon}
+                    animateScroll
+                    // closeOnDayPress={false}
+                  />
+                )}
+                <AgendaList
+                  sections={lessonList}
+                  renderItem={renderItem}
+                  // scrollToNextEvent
+                  sectionStyle={styles.section}
+                  // dayFormat={'yyyy-MM-d'}
                 />
-              )}
-              <AgendaList
-                sections={mock}
-                renderItem={renderItem}
-                // scrollToNextEvent
-                sectionStyle={styles.section}
-                // dayFormat={'yyyy-MM-d'}
+              </CalendarProvider>
+            </>
+          ) : (
+            <View style={styles.container2}>
+              <Text>Welcome, Guests!</Text>
+              <Text>Please Login to View Content!</Text>
+              <Button
+                title="Login"
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}
               />
-            </CalendarProvider>
-          </>
+            </View>
+          )
         ) : (
-          <View style={styles.container2}>
-            <Text>Welcome, Guests!</Text>
-            <Text>Please Login to View Content!</Text>
-            <Button
-              title="Login"
-              onPress={() => {
-                navigation.navigate('Login');
-              }}
-            />
-          </View>
+          <CourseModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
         )}
       </View>
     </ScrollView>
@@ -223,6 +175,35 @@ const TimeTable = ({t, navigation, props}) => {
 export default TimeTable;
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  courseOption: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  courseOptionText: {
+    fontSize: 16,
+  },
+  selectedCourseText: {
+    fontSize: 16,
+    marginTop: 20,
+  },
   calendar: {
     paddingLeft: 20,
     paddingRight: 20,

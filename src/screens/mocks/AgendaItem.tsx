@@ -15,7 +15,7 @@ const AgendaItem = (props: ItemProps) => {
   const buttonPressed = useCallback(() => {
     //console.log(navigationTest);
     //navigationTest.navigate('TestScreen',{route:navigationLink});
-    navigationTest.navigate('TestScreen', { myProp: 123 });
+    
   }, []);
 
   const itemPressed = useCallback(() => {
@@ -54,7 +54,7 @@ const AgendaItem = (props: ItemProps) => {
       </View>
       <Text style={styles.itemTitleText}>{item.title}</Text>
       <View style={styles.itemButtonContainer}>
-        <Button color={'grey'} title={'Info'} onPress={buttonPressed}/>
+        <Button color={'grey'} title={'Info'} onPress={itemPressed}/>
       </View>
     </TouchableOpacity>
   );
@@ -65,11 +65,20 @@ export default React.memo(AgendaItem);
 
 const styles = StyleSheet.create({
   item: {
-    padding: 20,
+    padding: 15,
     backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
-    flexDirection: 'row'
+    borderWidth: 1,
+    borderColor: 'lightgrey',
+    flexDirection: 'row',
+    shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 4,
+},
+shadowOpacity: 0.30,
+shadowRadius: 4.65,
+
+elevation: 8,
   },
   itemHourText: {
     color: 'black'

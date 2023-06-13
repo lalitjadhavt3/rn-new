@@ -189,6 +189,7 @@ const RegisterScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 10} // Adjust the offset as needed
         style={styles.container}>
         <ScrollView
           contentContainerStyle={styles.scrollContentContainer}
@@ -217,6 +218,7 @@ const RegisterScreen = ({navigation}) => {
               />
               <TextInput
                 placeholder="First Name"
+                placeholderTextColor="grey"
                 style={styles.inputField}
                 value={firstName}
                 onChangeText={text => setFirstName(text)}
@@ -240,6 +242,7 @@ const RegisterScreen = ({navigation}) => {
               />
               <TextInput
                 placeholder="Middle Name"
+                placeholderTextColor="grey"
                 style={styles.inputField}
                 value={middleName}
                 onChangeText={text => setMiddleName(text)}
@@ -263,6 +266,7 @@ const RegisterScreen = ({navigation}) => {
               />
               <TextInput
                 placeholder="Last Name"
+                placeholderTextColor="grey"
                 style={styles.inputField}
                 value={lastName}
                 onChangeText={text => setLastName(text)}
@@ -309,6 +313,7 @@ const RegisterScreen = ({navigation}) => {
               />
               <TextInput
                 placeholder="Mobile Number"
+                placeholderTextColor="grey"
                 style={styles.inputField}
                 keyboardType="numeric"
                 value={mobileNumber}
@@ -327,6 +332,7 @@ const RegisterScreen = ({navigation}) => {
               />
               <TextInput
                 placeholder="Referral Code (optional)"
+                placeholderTextColor="grey"
                 style={styles.inputField}
                 value={referralCode}
                 onChangeText={text => setReferralCode(text)}
@@ -335,6 +341,7 @@ const RegisterScreen = ({navigation}) => {
 
             <TextInput
               placeholder="Address"
+              placeholderTextColor="grey"
               style={styles.textarea}
               multiline
               value={address}
@@ -347,6 +354,7 @@ const RegisterScreen = ({navigation}) => {
                 onSelectedItemsChange={handleCourseSelection}
                 selectedItems={selectedCourses}
                 selectText="Select Courses"
+                selectedTextColor="black"
                 searchInputPlaceholderText="Search Courses..."
                 altFontFamily="Arial"
                 tagRemoveIconColor="#000"
@@ -440,6 +448,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   inputField: {
+    color: 'black',
     flex: 1,
   },
   dropdownContainer: {
