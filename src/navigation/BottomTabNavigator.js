@@ -2,7 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import {Person, Calendar} from '../assets/icons';
+import {Person, Calendar, Home} from '../assets/icons';
 import TimeTable from '../screens/TimeTable';
 import OfflineLecture from '../screens/OfflineLecture';
 import Register from '../screens/RegisterScreen';
@@ -12,6 +12,25 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          initialParams: {joinLink: 'test'},
+          tabBarLabel: 'Home',
+          unmountOnBlur: true,
+          tabBarIcon: ({color, size}) => (
+            <Home width={20} height={20} fill={color} />
+          ),
+          tabBarVisible: false,
+          tabBarBadgeStyle: {
+            backgroundColor: 'red',
+            color: 'white',
+          },
+          headerShown: false,
+        }}
+      />
       <Tab.Screen
         name="TimeTable"
         component={TimeTable}
