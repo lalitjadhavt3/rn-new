@@ -38,20 +38,24 @@ const TimeTable = ({t, navigation, props}) => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [lessonList, setLessonList] = useState([]);
-
+  const extracted = new Date(Date.now());
+  const mon = extracted.getMonth() + '-' + extracted.getFullYear();
   useEffect(() => {
-    const extracted = new Date(Date.now());
-    const mon = extracted.getMonth() + '-' + extracted.getFullYear();
-    onDateChanged(extracted);
+    if (user?.courseSelected == '') {
+      toggleModal();
+    } else {
+      onDateChanged(extracted);
+      console.log('ondatechange called');
+    }
   }, []);
+  useEffect(() => {
+    onDateChanged(extracted);
+    console.log('ondatechange called from another useeffect');
+  }, [user?.courseSelected]);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
-  useEffect(() => {
-    toggleModal();
-  }, [user.courseSelected]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
