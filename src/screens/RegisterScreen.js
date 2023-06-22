@@ -115,7 +115,7 @@ const RegisterScreen = ({navigation}) => {
         };
         const checkMobile = async () => {
           try {
-            const checkMobileRes = await api.get(
+            const checkMobileRes = await axios.get(
               '/student/apis/check_mobile.php',
               {
                 params: {
