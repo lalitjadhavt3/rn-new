@@ -42,7 +42,12 @@ const UserAccountSection = ({navigation, route}) => {
               signIn(data);
             }}
           />
-
+          <Button
+            title="Payment page"
+            onPress={() => {
+              navigation.navigate('Payment');
+            }}
+          />
           <Button
             title="Logout"
             onPress={() => {

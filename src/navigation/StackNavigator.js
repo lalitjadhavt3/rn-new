@@ -5,6 +5,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import {AuthContext} from '../context/AuthContext';
 import RegisterScreen from '../screens/RegisterScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ const StackNavigator = () => {
             <Stack.Screen
               name="Register"
               component={RegisterScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Payment"
+              component={PaymentScreen}
               options={{headerShown: false}}
             />
           </>
