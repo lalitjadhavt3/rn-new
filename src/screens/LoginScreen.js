@@ -81,7 +81,11 @@ const LoginScreen = ({navigation}) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>LOGIN</Text>
+        <Image
+          source={require('../assets/srgeniuslogo.png')}
+          style={styles.logo}
+        />
       </View>
       <View style={styles.content}>
         <Text style={styles.description}>
@@ -104,14 +108,14 @@ const LoginScreen = ({navigation}) => {
           value={password}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.registerbutton}
           onPress={() => {
             navigation.navigate('Register');
           }}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>REGISTER</Text>
         </TouchableOpacity>
       </View>
       {/* <TouchableOpacity style={styles.forgotPasswordButton}>
@@ -128,15 +132,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain', // Adjust the image content's aspect ratio
   },
   header: {
-    marginTop: 50,
+    marginTop: 1,
   },
   title: {
+    paddingTop: 60,
     fontSize: 24,
     fontWeight: '700',
-    color: 'black',
+    color: '#002D62',
+    textAlign: 'center',
+    paddingBottom: 10, // Align text center
   },
   content: {
     alignItems: 'center',
@@ -145,7 +156,8 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: 'center',
-    color: 'black',
+    color: '#002D62',
+    fontWeight: '700',
     fontSize: 14,
   },
   formContainer: {
@@ -155,28 +167,28 @@ const styles = StyleSheet.create({
   inputField: {
     width: '100%',
     height: 40,
-    borderColor: '#969696',
+    borderColor: '#002D62',
     borderWidth: 1,
     borderRadius: 5,
     marginTop: 10,
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: '#185DCF',
-    width: '100%',
+    backgroundColor: '#007FFF',
+    width: '70%',
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
-    marginTop: 10,
+    borderRadius: 20,
+    marginTop: 20,
   },
   registerbutton: {
     backgroundColor: '#25D366',
-    width: '100%',
+    width: '70%',
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 20,
     marginTop: 10,
   },
   buttonText: {
@@ -194,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
-    borderColor: 'black',
+    borderColor: '#002D62',
     borderWidth: 2,
   },
   googleIconWrapper: {
@@ -205,7 +217,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   googleText: {
-    color: 'black',
+    color: '#002D62',
     fontSize: 16,
     fontWeight: '600',
   },
