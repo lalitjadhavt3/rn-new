@@ -50,13 +50,11 @@ const TimeTable = ({t, navigation, props}) => {
   }, []);
   useEffect(() => {
     onDateChanged(extracted);
-    console.log('ondatechange called from another useeffect');
   }, [user?.courseSelected]);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     const extracted = new Date(Date.now());
@@ -79,6 +77,7 @@ const TimeTable = ({t, navigation, props}) => {
             course: user.courseSelected,
           },
         });
+
         setLessonList(response?.data?.data);
       } catch (error) {
         // Handle the error
@@ -115,7 +114,8 @@ const TimeTable = ({t, navigation, props}) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <View style={styles.container}>
-        {user?.courseSelected ? (
+        {console.log('course', typeof user?.courseSelected)}
+        {user?.courseSelected || user.courseSelected != '' ? (
           isLogin ? (
             <>
               <View style={styles.header}>
@@ -123,35 +123,47 @@ const TimeTable = ({t, navigation, props}) => {
                   <Text style={styles.title}>TimeTable</Text>
                 </View>
               </View>
-              <CalendarProvider
-                date={ITEMS[1]?.title}
-                onDateChanged={onDateChanged}
-                // onMonthChange={onMonthChange}
-                showTodayButton
-                // disabledOpacity={0.6}
-                theme={todayBtnTheme.current}
-                todayBottomMargin={16}>
-                {weekView ? (
-                  <WeekCalendar firstDay={1} markedDates={marked.current} />
-                ) : (
-                  <ExpandableCalendar
-                    theme={theme.current}
-                    firstDay={1}
-                    markedDates={marked.current}
-                    leftArrowImageSource={leftArrowIcon}
-                    rightArrowImageSource={rightArrowIcon}
-                    animateScroll
-                    // closeOnDayPress={false}
-                  />
-                )}
-                <AgendaList
-                  sections={lessonList}
-                  renderItem={renderItem}
-                  // scrollToNextEvent
-                  sectionStyle={styles.section}
-                  // dayFormat={'yyyy-MM-d'}
-                />
-              </CalendarProvider>
+              {console.log(lessonList)}
+              {lessonList.length > 1 ? (
+                <CalendarProvider
+                  date={ITEMS[1]?.title}
+                  onDateChanged={onDateChanged}
+                  // onMonthChange={onMonthChange}
+                  showTodayButton
+                  // disabledOpacity={0.6}
+                  theme={todayBtnTheme.current}
+                  todayBottomMargin={16}>
+                  {weekView ? (
+                    <WeekCalendar firstDay={1} markedDates={marked.current} />
+                  ) : (
+                    <ExpandableCalendar
+                      theme={theme.current}
+                      firstDay={1}
+                      markedDates={marked.current}
+                      leftArrowImageSource={leftArrowIcon}
+                      rightArrowImageSource={rightArrowIcon}
+                      animateScroll
+                      // closeOnDayPress={false}
+                    />
+                  )}
+                  {lessonList && (
+                    <AgendaList
+                      sections={lessonList}
+                      renderItem={renderItem}
+                      // scrollToNextEvent
+                      sectionStyle={styles.section}
+                      // dayFormat={'yyyy-MM-d'}
+                    />
+                  )}
+                </CalendarProvider>
+              ) : (
+                <View style={styles.container2}>
+                  <Text>Oops!</Text>
+                  <Text>
+                    There are no lectures or schedules assigned right now!
+                  </Text>
+                </View>
+              )}
             </>
           ) : (
             <View style={styles.container2}>

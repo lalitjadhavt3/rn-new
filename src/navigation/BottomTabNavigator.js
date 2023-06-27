@@ -7,6 +7,7 @@ import TimeTable from '../screens/TimeTable';
 import OfflineLecture from '../screens/OfflineLecture';
 import Register from '../screens/RegisterScreen';
 import ModalScreen from '../screens/ModalScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -80,7 +81,17 @@ const BottomTabNavigator = () => {
           tabBarButton: () => null,
         }}
       />
-
+      <Tab.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: 'none',
+          },
+          tabBarButton: () => null,
+        }}
+      />
       {/* 
     <Tab.Screen
      name='Join_Screen'

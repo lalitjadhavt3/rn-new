@@ -12,6 +12,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 
 import MultiSelect from 'react-native-multiple-select';
@@ -26,7 +27,7 @@ const RegisterScreen = ({navigation}) => {
   const [address, setAddress] = React.useState('');
   const [mobileNumber, setMobileNumber] = React.useState('');
   const [referralCode, setReferralCode] = React.useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const [courses, setCourses] = useState([]);
@@ -102,6 +103,7 @@ const RegisterScreen = ({navigation}) => {
     const isFormValid = validateForm();
 
     if (isFormValid) {
+      setIsLoading(true);
       try {
         const formData = {
           firstName: firstName,
@@ -123,9 +125,9 @@ const RegisterScreen = ({navigation}) => {
                 },
               },
             );
-            console.log(checkMobileRes.data);
+
             if (checkMobileRes.data.data.found == 0) {
-              const response = await api.post(
+              const response = await axios.post(
                 '/student/apis/register_student.php',
                 formData,
               );
@@ -181,6 +183,8 @@ const RegisterScreen = ({navigation}) => {
         checkMobile();
       } catch (error) {
         console.error('Error submitting form:', error);
+      } finally {
+        setIsLoading(false); // Set isLoading state back to false to hide the loader
       }
     }
   };
@@ -197,12 +201,11 @@ const RegisterScreen = ({navigation}) => {
           <View style={styles.header}>
             <Text style={styles.title}>Registration</Text>
           </View>
-          <View style={styles.content}>
-            <Text style={styles.description}>
-              Contrary to popular belief, Lorem Ipsum is not simply random text.
-              It has roots in a piece of classical Latin literature from 45 BC,
-              making it over
-            </Text>
+          <View style={styles.header}>
+            <Image
+              source={require('../assets/login.png')}
+              style={styles.logo}
+            />
           </View>
           <View style={styles.formContainer}>
             <View
@@ -376,8 +379,15 @@ const RegisterScreen = ({navigation}) => {
                 styleInputGroup={styles.inputGroup}
               />
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit}
+              disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                <Text style={styles.buttonText}>Submit</Text>
+              )}
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -405,6 +415,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: 'black',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignItems: 'center',
+    resizeMode: 'contain', // Adjust the image content's aspect ratio
   },
   content: {
     alignItems: 'center',
@@ -490,7 +506,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   button: {
-    backgroundColor: '#185DCF',
+    backgroundColor: '#25D366',
     width: '100%',
     height: 40,
     justifyContent: 'center',

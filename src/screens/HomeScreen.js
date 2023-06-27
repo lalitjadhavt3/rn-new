@@ -1,9 +1,10 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View, ScrollView} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import Swiper from 'react-native-swiper';
-
+import api from '../utils/api';
 const HomeScreen = ({navigation}) => {
+  const [userData, setUserData] = useState([]);
   const data = [
     {image: require('../assets/image-17.png'), title: 'Slide 1'},
     {image: require('../assets/image-18.png'), title: 'Slide 2'},
@@ -13,8 +14,23 @@ const HomeScreen = ({navigation}) => {
   const {user} = useContext(AuthContext);
 
   useEffect(() => {
+    const getUserDetails = async () => {
+      try {
+        const response = await api.get('/student/apis/get_stud_info.php', {
+          params: {
+            user: user.userID,
+          },
+        });
+        setUserData(response?.data?.data[0]);
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      }
+    };
     if (!user) {
       navigation.navigate('Login');
+    } else if (user?.userID) {
+      getUserDetails();
     }
   }, [user]);
 
@@ -28,7 +44,7 @@ const HomeScreen = ({navigation}) => {
             source={require('../assets/avatars-default-with-backdrop.png')}
           />
           <Text style={[styles.halloFahmiHaecal, styles.textTypo]}>
-            Hallo, Fahmi Haecal
+            Hello {userData.fname}
           </Text>
         </View>
         <View style={[styles.iconlyWrapper, styles.iconlyFlexBox]}>
@@ -65,7 +81,7 @@ const HomeScreen = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <View style={styles.frameView}>
+      {/* <View style={styles.frameView}>
         <View style={styles.frameParentShadowBox}>
           <View style={styles.image19Wrapper}>
             <Image
@@ -93,7 +109,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
     </ScrollView>
   );
 };
