@@ -296,6 +296,9 @@ const RegisterScreen = ({navigation}) => {
                   value={dateOfBirth}
                   mode="date"
                   display="default"
+                  placeholderTextColor="black"
+                  style={{color: 'black'}}
+                  textColor="black"
                   onChange={handleDateChange}
                   minimumDate={new Date(1900, 0, 1)} // Optional minimum date
                   maximumDate={new Date()} // Optional maximum date

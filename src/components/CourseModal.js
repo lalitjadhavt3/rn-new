@@ -1,20 +1,31 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 import axios from 'axios';
 import api from '../utils/api';
 import {AuthContext} from '../context/AuthContext';
+
 const CourseModal = ({modalVisible, setModalVisible}) => {
   const {user, signIn} = useContext(AuthContext);
   const [courseList, setCourseList] = useState([]);
+  const colorScheme = useColorScheme();
 
   const handleCourseSelection = course => {
     const data = {...user, courseSelected: course};
     signIn(data);
     setModalVisible(false);
   };
+
   useEffect(() => {
     fetchCourses();
   }, []);
+
   const fetchCourses = async () => {
     try {
       const response = await api.get('/student/apis/get_course.php', {
@@ -28,6 +39,39 @@ const CourseModal = ({modalVisible, setModalVisible}) => {
       console.error(error);
     }
   };
+
+  const isDarkMode = colorScheme === 'dark';
+
+  const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      backgroundColor: isDarkMode ? '#1c1c1c' : 'white',
+      padding: 20,
+      borderRadius: 8,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: isDarkMode ? 'white' : 'black',
+    },
+    courseOption: {
+      padding: 10,
+      marginBottom: 10,
+      backgroundColor: isDarkMode ? '#333333' : '#f0f0f0',
+      borderRadius: 4,
+    },
+    courseOptionText: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : 'black',
+    },
+  });
+
   return (
     <Modal visible={modalVisible} transparent>
       <View style={styles.modalContainer}>
@@ -46,33 +90,5 @@ const CourseModal = ({modalVisible, setModalVisible}) => {
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 8,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  courseOption: {
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-  },
-  courseOptionText: {
-    fontSize: 16,
-  },
-});
 
 export default CourseModal;

@@ -99,6 +99,7 @@ const LoginScreen = ({navigation}) => {
           value={username}
           keyboardType={'numeric'}
           onChangeText={setUsername}
+          placeholderTextColor={'#888'}
         />
         <TextInput
           placeholder="Enter Password"
@@ -106,6 +107,7 @@ const LoginScreen = ({navigation}) => {
           style={styles.inputField}
           onChangeText={setPassword}
           value={password}
+          placeholderTextColor={'#888'}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>LOGIN</Text>

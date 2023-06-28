@@ -1,9 +1,17 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 
 const ModalScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState('');
+  const colorScheme = useColorScheme();
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -13,6 +21,65 @@ const ModalScreen = () => {
     setSelectedCourse(course);
     toggleModal();
   };
+
+  const isDarkMode = colorScheme === 'dark';
+  console.log(isDarkMode);
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: isDarkMode ? '#1c1c1c' : 'white',
+    },
+    button: {
+      backgroundColor: isDarkMode ? '#ffcc00' : 'blue',
+      padding: 10,
+      borderRadius: 5,
+      marginBottom: 20,
+    },
+    buttonText: {
+      color: isDarkMode ? '#1c1c1c' : 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      backgroundColor: isDarkMode ? '#1c1c1c' : 'white',
+      padding: 20,
+      borderRadius: 10,
+      width: '80%',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: isDarkMode ? 'white' : 'black',
+    },
+    courseOption: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: isDarkMode ? '#999999' : '#ccc',
+    },
+    courseOptionText: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : 'black',
+    },
+    selectedCourseText: {
+      fontSize: 16,
+      marginTop: 20,
+      color: isDarkMode ? 'white' : 'black',
+    },
+  });
+
+  useEffect(() => {
+    const colorScheme = useColorScheme();
+    setIsDarkMode(colorScheme === 'dark');
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -54,53 +121,5 @@ const ModalScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  courseOption: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  courseOptionText: {
-    fontSize: 16,
-  },
-  selectedCourseText: {
-    fontSize: 16,
-    marginTop: 20,
-  },
-});
 
 export default ModalScreen;

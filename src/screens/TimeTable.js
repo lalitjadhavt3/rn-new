@@ -14,6 +14,9 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
+  useColorScheme,
+  BackHandler,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {
@@ -37,15 +40,21 @@ const TimeTable = ({t, navigation, props}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [refreshCount, setRefreshCount] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true); // Added loading state
   const [lessonList, setLessonList] = useState([]);
   const extracted = new Date(Date.now());
   const mon = extracted.getMonth() + '-' + extracted.getFullYear();
+
   useEffect(() => {
-    if (user?.courseSelected == '') {
-      toggleModal();
+    if (
+      !user?.courseSelected ||
+      user?.courseSelected === undefined ||
+      user?.courseSelected === ''
+    ) {
+      //console.log(user.courseSelected);
+      setModalVisible(true);
     } else {
       onDateChanged(extracted);
-      console.log('ondatechange called');
     }
   }, []);
   useEffect(() => {
@@ -70,6 +79,7 @@ const TimeTable = ({t, navigation, props}) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(async () => {
       try {
+        setLoading(true);
         const response = await api.get('/student/apis/get_schedule.php', {
           params: {
             date: d,
@@ -82,6 +92,8 @@ const TimeTable = ({t, navigation, props}) => {
       } catch (error) {
         // Handle the error
         console.error(error);
+      } finally {
+        setLoading(false); // Hide loader after data is fetched
       }
     }, 1000); // Specify the debounce delay (in milliseconds)
   };
@@ -114,8 +126,15 @@ const TimeTable = ({t, navigation, props}) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <View style={styles.container}>
-        {console.log('course', typeof user?.courseSelected)}
-        {user?.courseSelected || user.courseSelected != '' ? (
+        {loading ? ( // Display loader while loading
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator
+              size="large"
+              color={themeColor}
+              style={{justifyContent: 'center', alignItems: 'center'}}
+            />
+          </View>
+        ) : user?.courseSelected ? (
           isLogin ? (
             <>
               <View style={styles.header}>
@@ -124,7 +143,7 @@ const TimeTable = ({t, navigation, props}) => {
                 </View>
               </View>
               {console.log(lessonList)}
-              {lessonList.length > 1 ? (
+              {lessonList?.length > 1 ? (
                 <CalendarProvider
                   date={ITEMS[1]?.title}
                   onDateChanged={onDateChanged}
@@ -259,5 +278,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

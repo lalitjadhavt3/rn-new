@@ -1,8 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  useColorScheme,
+} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import Swiper from 'react-native-swiper';
 import api from '../utils/api';
+
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const data = [
@@ -12,6 +20,7 @@ const HomeScreen = ({navigation}) => {
     // Add more slides as needed
   ];
   const {user} = useContext(AuthContext);
+  const colorScheme = useColorScheme();
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -27,6 +36,7 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       }
     };
+
     if (!user) {
       navigation.navigate('Login');
     } else if (user?.userID) {
@@ -34,8 +44,10 @@ const HomeScreen = ({navigation}) => {
     }
   }, [user]);
 
+  const isDarkMode = colorScheme === 'dark';
+
   return (
-    <ScrollView style={styles.home}>
+    <ScrollView style={[styles.home, isDarkMode && styles.darkBackground]}>
       <View style={[styles.frameParent, styles.frameParentFlexBox]}>
         <View style={styles.avatarsDefaultWithBackdropParent}>
           <Image
@@ -43,7 +55,12 @@ const HomeScreen = ({navigation}) => {
             resizeMode="cover"
             source={require('../assets/avatars-default-with-backdrop.png')}
           />
-          <Text style={[styles.halloFahmiHaecal, styles.textTypo]}>
+          <Text
+            style={[
+              styles.halloFahmiHaecal,
+              styles.textTypo,
+              isDarkMode && styles.darkText,
+            ]}>
             Hello {userData.fname}
           </Text>
         </View>
@@ -56,13 +73,25 @@ const HomeScreen = ({navigation}) => {
         </View>
       </View>
 
-      <Text style={[styles.findACourse, styles.all1Clr]}>
+      <Text
+        style={[
+          styles.findACourse,
+          styles.all1Clr,
+          isDarkMode && styles.darkText,
+        ]}>
         Find a course you want to learn.
       </Text>
 
       <View style={styles.frameContainer}>
         <View style={styles.learnflexWrapper}>
-          <Text style={[styles.learnflex, styles.timeTypo]}>Courses</Text>
+          <Text
+            style={[
+              styles.learnflex,
+              styles.timeTypo,
+              isDarkMode && styles.darkText,
+            ]}>
+            Courses
+          </Text>
         </View>
       </View>
 
@@ -75,41 +104,14 @@ const HomeScreen = ({navigation}) => {
                 resizeMode="cover"
                 source={item.image}
               />
-              <Text style={styles.courseTitle}>{item.title}</Text>
+              <Text
+                style={[styles.courseTitle, isDarkMode && styles.darkText2]}>
+                {item.title}
+              </Text>
             </View>
           ))}
         </View>
       </ScrollView>
-
-      {/* <View style={styles.frameView}>
-        <View style={styles.frameParentShadowBox}>
-          <View style={styles.image19Wrapper}>
-            <Image
-              style={[styles.image19Icon, styles.iconPosition]}
-              resizeMode="cover"
-              source={require('../assets/image-18.png')}
-            />
-          </View>
-          <View style={styles.frontEndHtmlCssParent}>
-            <Text style={[styles.frontEndHtml, styles.seeTypo]}>
-              Front End HTML, CSS
-            </Text>
-            <View style={[styles.frameParent2, styles.frameParentFlexBox]}>
-              <View style={styles.iconlyFlexBox}>
-                <Image
-                  style={styles.iconly2}
-                  resizeMode="cover"
-                  source={require('../assets/iconly2.png')}
-                />
-                <Text style={[styles.text, styles.textClr]}>153</Text>
-              </View>
-              <View style={styles.iconlyFlexBox}>
-                <Text style={[styles.text1, styles.textTypo]}>$ 134</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View> */}
     </ScrollView>
   );
 };
@@ -118,6 +120,9 @@ const styles = StyleSheet.create({
   home: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  darkBackground: {
+    backgroundColor: '#000',
   },
   frameParentFlexBox: {
     flexDirection: 'row',
@@ -263,6 +268,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  darkText: {
+    color: '#fff',
+  },
+  darkText2: {
+    color: '#000',
   },
 });
 

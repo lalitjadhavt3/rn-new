@@ -20,8 +20,8 @@ const AgendaItem = (props: ItemProps) => {
 
   const itemPressed = useCallback(() => {
     Alert.alert(
+      '',
       item.title,
-      item.link,
       [
         {
           text: 'OK',
@@ -47,7 +47,7 @@ const AgendaItem = (props: ItemProps) => {
   }
 
   return (
-    <TouchableOpacity onPress={itemPressed} style={styles.item} >
+    <TouchableOpacity onPress={itemPressed} style={styles.item} key={item.id} >
       <View>
         <Text style={styles.itemHourText}>{item.hour}</Text>
         <Text style={styles.itemDurationText}>{item.duration}</Text>

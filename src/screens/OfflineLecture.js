@@ -17,32 +17,11 @@ const OfflineLecture = ({navigation, route}) => {
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const videoRef = useRef(null);
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackPress,
-    );
 
-    return () => backHandler.remove();
-  }, []);
   const toggleControls = () => {
     setShowControls(!showControls);
   };
-  const handleBackPress = () => {
-    Alert.alert(
-      'Confirmation',
-      'Are you sure you want to exit the video?',
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {
-          text: 'Exit',
-          onPress: () => navigation.navigate('TimeTable'),
-        },
-      ],
-      {cancelable: false},
-    );
-    return true;
-  };
+
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
