@@ -11,12 +11,15 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
+  useColorScheme,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import api from '../utils/api';
 const LoginScreen = ({navigation}) => {
+  const colorScheme = useColorScheme();
+  const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const {signIn} = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -99,7 +102,7 @@ const LoginScreen = ({navigation}) => {
           value={username}
           keyboardType={'numeric'}
           onChangeText={setUsername}
-          placeholderTextColor={'#888'}
+          placeholderTextColor={colorScheme == 'dark' ? 'white' : 'grey'}
         />
         <TextInput
           placeholder="Enter Password"
@@ -107,7 +110,7 @@ const LoginScreen = ({navigation}) => {
           style={styles.inputField}
           onChangeText={setPassword}
           value={password}
-          placeholderTextColor={'#888'}
+          placeholderTextColor={colorScheme == 'dark' ? 'white' : 'grey'}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>LOGIN</Text>
@@ -129,7 +132,7 @@ const LoginScreen = ({navigation}) => {
 
 const {width} = Dimensions.get('window');
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -184,6 +187,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     marginTop: 20,
+  },
+  inputFieldDarkModePlaceholder: {
+    color: 'black',
   },
   registerbutton: {
     backgroundColor: '#25D366',
@@ -241,5 +247,90 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    alignItems: 'center',
+  },
 
+  logo: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+  },
+  header: {
+    marginTop: 1,
+  },
+  title: {
+    paddingTop: 60,
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFF',
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
+
+  content: {
+    alignItems: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  description: {
+    textAlign: 'center',
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+
+  formContainer: {
+    width: width * 0.8,
+    alignItems: 'center',
+  },
+  inputField: {
+    width: '100%',
+    height: 40,
+    borderColor: '#FFF',
+    color: '#FFF',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+
+  inputFieldDarkModePlaceholder: {
+    color: 'white',
+  },
+  button: {
+    width: '70%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 20,
+    backgroundColor: '#007FFF',
+    borderWidth: 1,
+    borderColor: '#007FFF',
+  },
+
+  registerbutton: {
+    width: '70%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 10,
+    backgroundColor: '#25D366',
+    borderWidth: 1,
+  },
+
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  buttonTextDarkMode: {
+    color: '#007FFF',
+  },
+});
 export default LoginScreen;

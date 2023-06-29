@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   useColorScheme,
   BackHandler,
+  FlatList,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {
@@ -30,11 +31,14 @@ import AgendaItem from './mocks/AgendaItem';
 import {getTheme, themeColor, lightThemeColor} from './mocks/theme';
 import api from '../utils/api';
 import CourseModal from '../components/CourseModal';
-const leftArrowIcon = require('../assets/img/previous.png');
-const rightArrowIcon = require('../assets/img/next.png');
+
+const leftArrowIcon = require('../assets/img/banner-home.png');
+const rightArrowIcon = require('../assets/img//banner-home.png');
 const ITEMS = agendaItems;
 const weekView = true;
 const TimeTable = ({t, navigation, props}) => {
+  const colorScheme = useColorScheme();
+  const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const {user, signIn} = useContext(AuthContext);
   const [isLogin, setLogin] = useState(user);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,6 +50,7 @@ const TimeTable = ({t, navigation, props}) => {
   const mon = extracted.getMonth() + '-' + extracted.getFullYear();
 
   useEffect(() => {
+    console.log('user', user);
     if (
       !user?.courseSelected ||
       user?.courseSelected === undefined ||
@@ -61,9 +66,6 @@ const TimeTable = ({t, navigation, props}) => {
     onDateChanged(extracted);
   }, [user?.courseSelected]);
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     const extracted = new Date(Date.now());
@@ -77,6 +79,7 @@ const TimeTable = ({t, navigation, props}) => {
 
   const onDateChanged = d => {
     clearTimeout(timeoutId);
+
     timeoutId = setTimeout(async () => {
       try {
         setLoading(true);
@@ -104,10 +107,11 @@ const TimeTable = ({t, navigation, props}) => {
     todayButtonTextColor: themeColor,
   });
 
-  const renderItem = useCallback(({item, index}) => {
+  const renderItems = useCallback(({item, index}) => {
     return (
       <AgendaItem
         item={item}
+        index={index}
         navigationLink={item.link}
         navigationTest={navigation}
         usernameAuth={user}
@@ -116,144 +120,122 @@ const TimeTable = ({t, navigation, props}) => {
   }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <View style={styles.container}>
-        {loading ? ( // Display loader while loading
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator
-              size="large"
-              color={themeColor}
-              style={{justifyContent: 'center', alignItems: 'center'}}
-            />
-          </View>
-        ) : user?.courseSelected ? (
-          isLogin ? (
-            <>
-              <View style={styles.header}>
-                <View style={styles.header1}>
-                  <Text style={styles.title}>TimeTable</Text>
-                </View>
-              </View>
-              {console.log(lessonList)}
-              {lessonList?.length > 1 ? (
-                <CalendarProvider
-                  date={ITEMS[1]?.title}
-                  onDateChanged={onDateChanged}
-                  // onMonthChange={onMonthChange}
-                  showTodayButton
-                  // disabledOpacity={0.6}
-                  theme={todayBtnTheme.current}
-                  todayBottomMargin={16}>
-                  {weekView ? (
-                    <WeekCalendar firstDay={1} markedDates={marked.current} />
-                  ) : (
-                    <ExpandableCalendar
-                      theme={theme.current}
-                      firstDay={1}
-                      markedDates={marked.current}
-                      leftArrowImageSource={leftArrowIcon}
-                      rightArrowImageSource={rightArrowIcon}
-                      animateScroll
-                      // closeOnDayPress={false}
-                    />
-                  )}
-                  {lessonList && (
-                    <AgendaList
-                      sections={lessonList}
-                      renderItem={renderItem}
-                      // scrollToNextEvent
-                      sectionStyle={styles.section}
-                      // dayFormat={'yyyy-MM-d'}
-                    />
-                  )}
-                </CalendarProvider>
-              ) : (
-                <View style={styles.container2}>
-                  <Text>Oops!</Text>
-                  <Text>
-                    There are no lectures or schedules assigned right now!
-                  </Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <View style={styles.container2}>
-              <Text>Welcome, Guests!</Text>
-              <Text>Please Login to View Content!</Text>
-              <Button
-                title="Login"
-                onPress={() => {
-                  navigation.navigate('Login');
-                }}
-              />
-            </View>
-          )
-        ) : (
-          <CourseModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+    <View style={styles.container}>
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator
+            size="large"
+            color={colorScheme == 'dark' ? 'white' : 'black'}
+            style={{justifyContent: 'center', alignItems: 'center'}}
           />
-        )}
-      </View>
-    </ScrollView>
+        </View>
+      ) : (
+        <FlatList
+          contentContainerStyle={{
+            flex: 1,
+            backgroundColor: colorScheme != 'dark' ? '#FFFFFF' : '#000',
+            alignItems: 'center',
+            flexGrow: 2,
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          data={lessonList ? lessonList : null}
+          renderItem={({item}) => (
+            <View style={styles.container}>
+              {user?.courseSelected ? (
+                isLogin ? (
+                  <>
+                    <View style={styles.header}>
+                      <View style={styles.header1}>
+                        <Text style={styles.title}>Time Table</Text>
+                      </View>
+                    </View>
+                    {lessonList?.length > 1 ? (
+                      <CalendarProvider
+                        date={ITEMS[1]?.title}
+                        onDateChanged={onDateChanged}
+                        showTodayButton
+                        theme={todayBtnTheme.current}
+                        todayBottomMargin={16}>
+                        {weekView ? (
+                          <WeekCalendar
+                            firstDay={1}
+                            markedDates={marked.current}
+                          />
+                        ) : (
+                          <ExpandableCalendar
+                            theme={theme.current}
+                            firstDay={1}
+                            markedDates={marked.current}
+                            leftArrowImageSource={leftArrowIcon}
+                            rightArrowImageSource={rightArrowIcon}
+                            animateScroll
+                          />
+                        )}
+                        {lessonList && (
+                          <AgendaList
+                            sections={lessonList}
+                            renderItem={renderItems}
+                            sectionStyle={styles.section}
+                          />
+                        )}
+                      </CalendarProvider>
+                    ) : (
+                      <View style={styles.container2}>
+                        <Text>Oops!</Text>
+                        <Text>
+                          There are no lectures or schedules assigned right now!
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                ) : (
+                  <View style={styles.container2}>
+                    <Text>Welcome, Guests!</Text>
+                    <Text>Please Login to View Content!</Text>
+                    <Button
+                      title="Login"
+                      onPress={() => {
+                        navigation.navigate('Login');
+                      }}
+                    />
+                  </View>
+                )
+              ) : (
+                <CourseModal
+                  modalVisible={modalVisible}
+                  setModalVisible={setModalVisible}
+                />
+              )}
+            </View>
+          )}
+        />
+      )}
+      <CourseModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+    </View>
   );
 };
 
 export default TimeTable;
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  courseOption: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  courseOptionText: {
-    fontSize: 16,
-  },
-  selectedCourseText: {
-    fontSize: 16,
-    marginTop: 20,
-  },
-  calendar: {
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
+const lightStyles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     flex: 1,
-    zIndex: 1,
-    paddingTop: Platform.OS !== 'ios' ? 10 : 0,
+    backgroundColor: '#FFFFFF',
   },
-
-  section: {
-    backgroundColor: lightThemeColor,
-    color: 'grey',
-    textTransform: 'capitalize',
+  header: {
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
+    marginTop: 10,
+    paddingHorizontal: 16,
+  },
+  header1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   title: {
     fontFamily: 'Poppins-Medium',
@@ -262,22 +244,62 @@ const styles = StyleSheet.create({
     lineHeight: 36,
     flex: 1,
     textAlign: 'center',
-  },
-  header: {
-    paddingTop: Platform.OS === 'ios' ? 10 : 0,
-    marginTop: 20,
-    paddingHorizontal: 16,
+    color: '#000000',
   },
   container2: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  section: {
+    backgroundColor: lightThemeColor,
+    color: 'grey',
+    textTransform: 'capitalize',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  header: {
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
+    marginTop: 10,
+    paddingHorizontal: 16,
   },
   header1: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  title: {
+    fontFamily: 'Poppins-Medium',
+    fontWeight: '500',
+    fontSize: 24,
+    lineHeight: 36,
+    flex: 1,
+    textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  container2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#000000',
+  },
+  section: {
+    backgroundColor: '#1C1C1E',
+    color: 'grey',
+    textTransform: 'capitalize',
   },
   loaderContainer: {
     flex: 1,

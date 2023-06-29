@@ -13,6 +13,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  useColorScheme,
 } from 'react-native';
 
 import MultiSelect from 'react-native-multiple-select';
@@ -20,6 +21,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import api from '../utils/api';
 const RegisterScreen = ({navigation}) => {
+  const colorScheme = useColorScheme();
+  const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const [firstName, setFirstName] = React.useState('');
   const [middleName, setMiddleName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -286,19 +289,17 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.inputFieldIcon}
                 source={require('../assets/calendar.png')}
               />
-              <TouchableOpacity
-                style={styles.inputField}
-                onPress={showDatePicker}>
-                <Text>{dateOfBirth.toDateString()}</Text>
+              <TouchableOpacity onPress={showDatePicker}>
+                <Text
+                  style={{color: colorScheme == 'dark' ? 'white' : 'black'}}>
+                  {dateOfBirth.toDateString()}
+                </Text>
               </TouchableOpacity>
               {showPicker && (
                 <DateTimePicker
                   value={dateOfBirth}
                   mode="date"
                   display="default"
-                  placeholderTextColor="black"
-                  style={{color: 'black'}}
-                  textColor="black"
                   onChange={handleDateChange}
                   minimumDate={new Date(1900, 0, 1)} // Optional minimum date
                   maximumDate={new Date()} // Optional maximum date
@@ -360,17 +361,23 @@ const RegisterScreen = ({navigation}) => {
                 onSelectedItemsChange={handleCourseSelection}
                 selectedItems={selectedCourses}
                 selectText="Select Courses"
-                selectedTextColor="black"
+                selectedTextColor={colorScheme != 'dark' ? 'white' : 'black'}
                 searchInputPlaceholderText="Search Courses..."
                 altFontFamily="Arial"
-                tagRemoveIconColor="#000"
-                tagBorderColor="#000"
-                tagTextColor="#000"
-                selectedItemTextColor="#000"
-                selectedItemIconColor="#000"
-                itemTextColor="grey"
+                tagRemoveIconColor={colorScheme == 'dark' ? 'white' : 'black'}
+                tagBorderColor={colorScheme == 'dark' ? 'white' : 'black'}
+                tagTextColor={colorScheme == 'dark' ? 'white' : 'black'}
+                selectedItemTextColor={
+                  colorScheme == 'dark' ? 'white' : 'black'
+                }
+                selectedItemIconColor={
+                  colorScheme == 'dark' ? 'white' : 'black'
+                }
+                itemTextColor={colorScheme == 'dark' ? 'white' : 'black'}
                 displayKey="name"
-                searchInputStyle={{color: '#CCC'}}
+                searchInputStyle={{
+                  color: colorScheme == 'dark' ? 'white' : 'black',
+                }}
                 submitButtonColor="#185DCF"
                 submitButtonText="Ok"
                 styleDropdownMenuSubsection={styles.dropdownMenuSubsection}
@@ -401,7 +408,7 @@ const RegisterScreen = ({navigation}) => {
 
 const {width} = Dimensions.get('window');
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -544,6 +551,166 @@ const styles = StyleSheet.create({
   },
   selectorContainer: {
     marginTop: 0,
+  },
+  inputGroup: {
+    borderColor: '#969696',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+});
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    marginTop: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: 'white',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignItems: 'center',
+    resizeMode: 'contain', // Adjust the image content's aspect ratio
+  },
+  content: {
+    alignItems: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  description: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 14,
+  },
+  formContainer: {
+    width: width * 0.8,
+    alignItems: 'center',
+  },
+  inputFieldContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    borderColor: '#969696',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    color: 'white',
+  },
+  inputFieldContainerError: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    borderColor: 'red',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  inputFieldIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  inputField: {
+    color: 'white',
+    flex: 1,
+  },
+  dropdownContainer: {
+    width: '100%',
+    marginVertical: 15,
+    backgroundColor: 'black',
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+    color: 'white',
+    borderColor: 'white',
+  },
+  dropdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    color: 'white',
+  },
+  dropdownSelected: {
+    color: 'white',
+    textShadowColor: 'white',
+  },
+  dropdownTickIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+    color: 'white',
+  },
+  dropdownOption: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: 'white',
+  },
+  textarea: {
+    width: '100%',
+    height: 80,
+    borderColor: '#969696',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: '#25D366',
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dropdownMenuSubsection: {backgroundColor: 'black'},
+  dropdownText: {
+    fontSize: 14,
+    color: '#fff',
+    marginTop: 0,
+  },
+  dropdownMenu: {
+    borderColor: '#969696',
+    borderWidth: 1,
+    borderRadius: 1,
+    marginTop: 0,
+    maxHeight: 200,
+  },
+  itemsContainer: {
+    maxHeight: 500,
+  },
+  listContainer: {
+    borderColor: '#969696',
+    borderWidth: 1,
+    backgroundColor: 'black',
+  },
+  selectorContainer: {
+    marginTop: 0,
+    backgroundColor: 'black',
   },
   inputGroup: {
     borderColor: '#969696',

@@ -7,10 +7,11 @@ interface ItemProps {
   navigationLink:any;
   navigationTest:any;
   usernameAuth:any;
+  index:any;
 }
 
 const AgendaItem = (props: ItemProps) => {
-  const {item,navigationLink,navigationTest,usernameAuth} = props;
+  const {item,navigationLink,navigationTest,usernameAuth,index} = props;
 
   const buttonPressed = useCallback(() => {
     //console.log(navigationTest);
@@ -47,7 +48,7 @@ const AgendaItem = (props: ItemProps) => {
   }
 
   return (
-    <TouchableOpacity onPress={itemPressed} style={styles.item} key={item.id} >
+    <TouchableOpacity onPress={itemPressed} style={styles.item} key={index} >
       <View>
         <Text style={styles.itemHourText}>{item.hour}</Text>
         <Text style={styles.itemDurationText}>{item.duration}</Text>
