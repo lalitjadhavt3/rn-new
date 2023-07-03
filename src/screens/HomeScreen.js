@@ -6,20 +6,23 @@ import {
   View,
   ScrollView,
   useColorScheme,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import Swiper from 'react-native-swiper';
-import api from '../utils/api';
-
+import api, {API_BASE_URL} from '../utils/api';
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [courseData, setCourseData] = useState([]);
   const data = [
     {image: require('../assets/image-17.png'), title: 'Slide 1'},
     {image: require('../assets/image-18.png'), title: 'Slide 2'},
     {image: require('../assets/image-19.png'), title: 'Slide 3'},
     // Add more slides as needed
   ];
-  const {user} = useContext(AuthContext);
+  const {user, signIn} = useContext(AuthContext);
   const colorScheme = useColorScheme();
 
   useEffect(() => {
@@ -31,6 +34,8 @@ const HomeScreen = ({navigation}) => {
           },
         });
         setUserData(response?.data?.data[0]);
+        const data = {...user, userData: response?.data?.data[0]};
+        signIn(data);
       } catch (error) {
         // Handle the error
         console.error(error);
@@ -42,8 +47,29 @@ const HomeScreen = ({navigation}) => {
     } else if (user?.userID) {
       getUserDetails();
     }
-  }, [user]);
+  }, []);
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const response = await api.get('/student/apis/get_course_details.php', {
+          params: {
+            courses: userData?.courses,
+          },
+        });
 
+        setCourseData(response?.data?.data);
+        console.log(userData?.courses);
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      } finally {
+        setLoading(false); // Hide loader after data is fetched
+      }
+    };
+    if (userData?.courses?.length > 0) {
+      fetchCourseData();
+    }
+  }, [userData?.courses]);
   const isDarkMode = colorScheme === 'dark';
 
   return (
@@ -65,11 +91,16 @@ const HomeScreen = ({navigation}) => {
           </Text>
         </View>
         <View style={[styles.iconlyWrapper, styles.iconlyFlexBox]}>
-          <Image
-            style={[styles.iconly, styles.iconlyLayout]}
-            resizeMode="cover"
-            source={require('../assets/iconly.png')}
-          />
+          <TouchableOpacity
+            onPressIn={() => {
+              Alert.alert('Feature coming soon');
+            }}>
+            <Image
+              style={[styles.iconly, styles.iconlyLayout]}
+              resizeMode="cover"
+              source={require('../assets/iconly.png')}
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -79,39 +110,53 @@ const HomeScreen = ({navigation}) => {
           styles.all1Clr,
           isDarkMode && styles.darkText,
         ]}>
-        Find a course you want to learn.
+        Your Courses
       </Text>
 
-      <View style={styles.frameContainer}>
-        <View style={styles.learnflexWrapper}>
-          <Text
-            style={[
-              styles.learnflex,
-              styles.timeTypo,
-              isDarkMode && styles.darkText,
-            ]}>
-            Courses
-          </Text>
-        </View>
-      </View>
-
-      <ScrollView horizontal style={styles.scrollView}>
-        <View style={styles.coursesContainer}>
-          {data.map((item, index) => (
-            <View style={styles.courseCard} key={index}>
-              <Image
-                style={styles.courseImage}
-                resizeMode="cover"
-                source={item.image}
-              />
+      {courseData.map(course => (
+        <View key={course.course_id}>
+          <View style={styles.frameContainer}>
+            <View style={styles.learnflexWrapper}>
               <Text
-                style={[styles.courseTitle, isDarkMode && styles.darkText2]}>
-                {item.title}
+                style={[
+                  styles.learnflex,
+                  styles.timeTypo,
+                  isDarkMode && styles.darkText,
+                ]}>
+                {course.course_name}
               </Text>
             </View>
-          ))}
+          </View>
+
+          <ScrollView horizontal style={styles.scrollView}>
+            <View style={styles.coursesContainer}>
+              {course.lessons.map(lesson => (
+                <TouchableOpacity
+                  style={styles.courseCard}
+                  key={lesson.lesson_id}
+                  onPressIn={() => {
+                    console.log(lesson.lesson_link);
+                  }}>
+                  <Image
+                    style={styles.courseImage}
+                    resizeMode="cover"
+                    source={{
+                      uri: API_BASE_URL + 'admin/' + lesson.lesson_bg_image,
+                    }}
+                  />
+                  <Text
+                    style={[
+                      styles.courseTitle,
+                      isDarkMode && styles.darkText2,
+                    ]}>
+                    {lesson.lesson_title}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      ))}
     </ScrollView>
   );
 };

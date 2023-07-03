@@ -6,7 +6,6 @@ import {Person, Calendar, Home} from '../assets/icons';
 import TimeTable from '../screens/TimeTable';
 import OfflineLecture from '../screens/OfflineLecture';
 import Register from '../screens/RegisterScreen';
-import ModalScreen from '../screens/ModalScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 const Tab = createBottomTabNavigator();
 
