@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import api from '../utils/api';
 const LoginScreen = ({navigation}) => {
   const colorScheme = useColorScheme();

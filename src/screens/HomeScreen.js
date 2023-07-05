@@ -26,7 +26,7 @@ const HomeScreen = ({navigation}) => {
     {image: require('../assets/image-19.png'), title: 'Slide 3'},
     // Add more slides as needed
   ];
-  const displayPayAlert = () => {
+  const alertPayment = () => {
     Alert.alert(
       'Payment Due',
       'Oops ! You have not paid the course fees yet. Kindly Click on Pay now button to Start your learning Journey!',
@@ -39,6 +39,28 @@ const HomeScreen = ({navigation}) => {
         {
           text: 'PAY NOW',
           onPress: () => navigation.navigate('Payment'),
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+  const alertVideo = link => {
+    Alert.alert(
+      'View Lecture',
+      '',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Join',
+          onPress: () =>
+            navigation.navigate('OfflineLecture', {
+              joinLink: link,
+              username: user?.username,
+            }),
         },
       ],
       {cancelable: true},
@@ -204,11 +226,8 @@ const HomeScreen = ({navigation}) => {
                   key={lesson.lesson_id}
                   onPressIn={() => {
                     user?.userData?.payment_status == 'success'
-                      ? navigation.navigate('OfflineLecture', {
-                          joinLink: lesson?.lesson_link,
-                          username: user?.username,
-                        })
-                      : displayPayAlert();
+                      ? alertVideo(lesson?.lesson_link)
+                      : alertPayment();
                   }}>
                   {console.log(lesson)}
                   <Image
@@ -542,8 +561,8 @@ const styles = StyleSheet.create({
   modalStaffsub: {
     fontSize: 16,
     fontWeight: '500',
-    marginTop: 25,
-    marginLeft: 16,
+    marginTop: '2%',
+    textAlign: 'center',
   },
 
   loaderContainer: {

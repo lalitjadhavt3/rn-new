@@ -18,7 +18,6 @@ import {
 
 import MultiSelect from 'react-native-multiple-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from 'axios';
 import api from '../utils/api';
 const RegisterScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
@@ -130,7 +129,7 @@ const RegisterScreen = ({navigation}) => {
             );
 
             if (checkMobileRes.data.data.found == 0) {
-              const response = await axios.post(
+              const response = await api.post(
                 '/student/apis/register_student.php',
                 formData,
               );

@@ -7,7 +7,6 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import axios from 'axios';
 import api from '../utils/api';
 import {AuthContext} from '../context/AuthContext';
 

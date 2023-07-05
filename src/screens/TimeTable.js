@@ -233,7 +233,7 @@ const TimeTable = ({t, navigation, props}) => {
                         </View>
                       )}
                     </>
-                  ) : user?.userID == true &&
+                  ) : user?.userID &&
                     (user?.userData?.payment_status == undefined ||
                       user?.userData?.payment_status == 'pending') ? (
                     <View style={styles.container2}>
@@ -377,6 +377,9 @@ const lightStyles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
   },
+  buttonText: {
+    color: 'white',
+  },
 });
 
 const darkStyles = StyleSheet.create({
@@ -439,5 +442,8 @@ const darkStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
   },
 });
