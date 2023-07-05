@@ -2,8 +2,7 @@ import {WebView} from 'react-native-webview';
 import React, {useState, useContext, useCallback, useEffect} from 'react';
 import {RefreshControl, ScrollView, BackHandler} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-
-const API_BASE_URL = 'http://192.168.1.2/nexus/pay/cart.php';
+import {API_BASE_URL} from '../utils/api';
 
 const PaymentScreen = ({navigation}) => {
   const {user} = useContext(AuthContext);
@@ -24,7 +23,7 @@ const PaymentScreen = ({navigation}) => {
   ];
 
   // Construct the WebView URL with query parameters
-  const webViewUrl = `${API_BASE_URL}?data=${encodeURIComponent(
+  const webViewUrl = `${API_BASE_URL}pay/cart.php?data=${encodeURIComponent(
     JSON.stringify(data),
   )}`;
   console.log(webViewUrl);
