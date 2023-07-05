@@ -160,7 +160,8 @@ const TimeTable = ({t, navigation, props}) => {
             renderItem={({item}) => (
               <View style={styles.container}>
                 {user?.courseSelected ? (
-                  user?.userID && user?.courseFeesPaid ? (
+                  user?.userID &&
+                  user?.userData?.payment_status == 'success' ? (
                     <>
                       <View style={styles.header}>
                         <View style={styles.header1}>
@@ -233,7 +234,8 @@ const TimeTable = ({t, navigation, props}) => {
                       )}
                     </>
                   ) : user?.userID == true &&
-                    user?.courseFeesPaid == undefined ? (
+                    (user?.userData?.payment_status == undefined ||
+                      user?.userData?.payment_status == 'pending') ? (
                     <View style={styles.container2}>
                       <Text>Hello There!</Text>
                       <Text>
