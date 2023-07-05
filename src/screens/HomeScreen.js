@@ -8,6 +8,8 @@ import {
   useColorScheme,
   TouchableOpacity,
   Alert,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import Swiper from 'react-native-swiper';
@@ -16,10 +18,51 @@ const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [courseData, setCourseData] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
   const data = [
     {image: require('../assets/image-17.png'), title: 'Slide 1'},
     {image: require('../assets/image-18.png'), title: 'Slide 2'},
     {image: require('../assets/image-19.png'), title: 'Slide 3'},
+    // Add more slides as needed
+  ];
+  const teacherData = [
+    {
+      image: require('../assets/teacher_img/1.jpg'),
+      title: 'Tilottama  Wankhede',
+      edu: 'D.Ed, B.A, M.A(English)',
+      sub: 'English[Std 5th to 10th]',
+    },
+    {
+      image: require('../assets/teacher_img/2.jpg'),
+      title: 'Akash Kanwale',
+      edu: 'M.Sc, B.Ed ',
+      sub: 'Science[Std 8th to 10th] [Marathi Medium]',
+    },
+    {
+      image: require('../assets/teacher_img/3.jpg'),
+      title: 'Dnyandeep Dhote',
+      edu: 'M.Sc(Math), B.Ed',
+      sub: 'Maths[Std 5th to 10th] [Marathi Medium]',
+    },
+    {
+      image: require('../assets/teacher_img/4.jpg'),
+      title: 'Mayuresh Sahastrabuddhe',
+      edu: 'M.Sc(Maths)(Chemistry), B.Ed',
+      sub: 'Maths[Std 8th to 10th] [English Medium]',
+    },
+    {
+      image: require('../assets/teacher_img/5.jpg'),
+      title: 'Mayur Tipare',
+      edu: 'M.A(English), B.Ed',
+      sub: 'English[Grammer]',
+    },
+    {
+      image: require('../assets/teacher_img/6.jpg'),
+      title: 'Swati Dhamankar',
+      edu: 'M.Sc(Chemistry)',
+      sub: 'Science[Std 8th to 10th] [English Medium]',
+    },
     // Add more slides as needed
   ];
   const {user, signIn} = useContext(AuthContext);
@@ -71,7 +114,14 @@ const HomeScreen = ({navigation}) => {
     }
   }, [userData?.courses]);
   const isDarkMode = colorScheme === 'dark';
-
+  if (loading) {
+    return (
+      <View
+        style={[styles.loaderContainer, isDarkMode && styles.darkBackground]}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
   return (
     <ScrollView style={[styles.home, isDarkMode && styles.darkBackground]}>
       <View style={[styles.frameParent, styles.frameParentFlexBox]}>
@@ -157,6 +207,77 @@ const HomeScreen = ({navigation}) => {
           </ScrollView>
         </View>
       ))}
+      <View style={styles.frameContainer}>
+        <View style={styles.learnflexWrapper}>
+          <Text
+            style={[
+              styles.learnflex,
+              styles.timeTypo,
+              isDarkMode && styles.darkText,
+            ]}>
+            Teaching Staff
+          </Text>
+        </View>
+      </View>
+
+      <ScrollView horizontal style={styles.scrollView}>
+        <View style={styles.staffContainer}>
+          <Modal
+            visible={modalVisible}
+            animationType="fade"
+            transparent={true}
+            onRequestClose={() => setModalVisible(false)}>
+            <View
+              style={[
+                styles.modalContainer1,
+                isDarkMode && styles.modalContainerdark,
+              ]}>
+              {selectedStaff && (
+                <View style={styles.modalContainer}>
+                  <Image
+                    style={styles.modalStaffImage}
+                    resizeMode="cover"
+                    source={selectedStaff.image}
+                  />
+                  <Text style={styles.modalStaffTitle}>
+                    {selectedStaff.title}
+                  </Text>
+                  <Text style={styles.modalStaffEdu}>{selectedStaff.edu}</Text>
+                  <Text style={styles.modalStaffsub}>{selectedStaff.sub}</Text>
+                </View>
+              )}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
+          {teacherData.map((item, index) => (
+            <View style={styles.staffCard} key={index}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                  setSelectedStaff(item);
+                }}>
+                <Image
+                  style={styles.staffImage}
+                  resizeMode="cover"
+                  source={item.image}
+                />
+                <Text
+                  style={[styles.staffTitle, isDarkMode && styles.darkText2]}>
+                  {item.title}
+                </Text>
+                <Text style={[styles.staffedu, isDarkMode && styles.darkText2]}>
+                  {item.edu}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </ScrollView>
   );
 };
@@ -319,6 +440,92 @@ const styles = StyleSheet.create({
   },
   darkText2: {
     color: '#000',
+  },
+  staffContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 40,
+  },
+  staffCard: {
+    marginRight: 16,
+    width: 180,
+    height: 200,
+    borderRadius: 16,
+    backgroundColor: '#F4F4F4',
+    padding: 12,
+  },
+  staffImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
+  },
+  staffTitle: {
+    marginTop: 8,
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '900',
+  },
+  staffedu: {
+    fontSize: 10,
+    fontWeight: '400',
+    textAlign: 'center',
+  },
+  modalContainer1: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+  },
+  modalContainerdark: {
+    flex: 1,
+    backgroundColor: 'black',
+    alignItems: 'center',
+  },
+  closeButton: {
+    backgroundColor: '#007FFF',
+    width: '50%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 80,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalStaffImage: {
+    width: 400,
+    height: 400,
+    borderBottomWidth: 70,
+    alignItems: 'center',
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  modalStaffTitle: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontWeight: '900',
+    marginTop: 18,
+  },
+  modalStaffEdu: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 8,
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  modalStaffsub: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginTop: 25,
+    marginLeft: 16,
+  },
+
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
