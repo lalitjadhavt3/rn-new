@@ -26,6 +26,24 @@ const HomeScreen = ({navigation}) => {
     {image: require('../assets/image-19.png'), title: 'Slide 3'},
     // Add more slides as needed
   ];
+  const displayPayAlert = () => {
+    Alert.alert(
+      'Payment Due',
+      'Oops ! You have not paid the course fees yet. Kindly Click on Pay now button to Start your learning Journey!',
+      [
+        {
+          text: 'I will Pay Later',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'PAY NOW',
+          onPress: () => navigation.navigate('Payment'),
+        },
+      ],
+      {cancelable: true},
+    );
+  };
   const teacherData = [
     {
       image: require('../assets/teacher_img/1.jpg'),
@@ -185,8 +203,14 @@ const HomeScreen = ({navigation}) => {
                   style={styles.courseCard}
                   key={lesson.lesson_id}
                   onPressIn={() => {
-                    console.log(lesson.lesson_link);
+                    user?.userData?.payment_status == 'success'
+                      ? navigation.navigate('OfflineLecture', {
+                          joinLink: lesson?.lesson_link,
+                          username: user?.username,
+                        })
+                      : displayPayAlert();
                   }}>
+                  {console.log(lesson)}
                   <Image
                     style={styles.courseImage}
                     resizeMode="cover"
