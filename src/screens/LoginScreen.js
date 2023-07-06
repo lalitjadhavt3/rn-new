@@ -40,7 +40,7 @@ const LoginScreen = ({navigation}) => {
 
           const str = JSON.stringify(data);
           const response = await api.post('auth.php', JSON.parse(str));
-
+          console.log('USERDATA FROM AUTH API', response?.data?.data);
           if (response?.data?.data?.token) {
             try {
               await AsyncStorage.setItem(

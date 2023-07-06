@@ -111,13 +111,21 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     const getUserDetails = async () => {
       try {
+        console.log('user data passing to get stud info api', user?.userID);
         const response = await api.get('/student/apis/get_stud_info.php', {
           params: {
-            user: user.userID,
+            user: user?.userData?.auth_id
+              ? user?.userData?.auth_id
+              : user?.userID,
           },
         });
         setUserData(response?.data?.data[0]);
-        const data = {...user, userData: response?.data?.data[0]};
+        const data = {
+          ...user,
+          userID: response?.data?.data[0].id,
+          userData: response?.data?.data[0],
+        };
+        console.log('data changed of userid', data);
         signIn(data);
       } catch (error) {
         // Handle the error
@@ -141,7 +149,6 @@ const HomeScreen = ({navigation}) => {
         });
 
         setCourseData(response?.data?.data);
-        console.log(userData?.courses);
       } catch (error) {
         // Handle the error
         console.error(error);
@@ -229,7 +236,6 @@ const HomeScreen = ({navigation}) => {
                       ? alertVideo(lesson?.lesson_link)
                       : alertPayment();
                   }}>
-                  {console.log(lesson)}
                   <Image
                     style={styles.courseImage}
                     resizeMode="cover"

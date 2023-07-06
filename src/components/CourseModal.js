@@ -14,7 +14,7 @@ const CourseModal = ({modalVisible, setModalVisible}) => {
   const {user, signIn} = useContext(AuthContext);
   const [courseList, setCourseList] = useState([]);
   const colorScheme = useColorScheme();
-
+  console.log('DATA FROM MODAL', user);
   const handleCourseSelection = course => {
     const data = {...user, courseSelected: course};
     signIn(data);
@@ -29,7 +29,7 @@ const CourseModal = ({modalVisible, setModalVisible}) => {
     try {
       const response = await api.get('/student/apis/get_course.php', {
         params: {
-          user: user.userID,
+          user: user?.userData?.id,
         },
       });
       setCourseList(response?.data?.data);
