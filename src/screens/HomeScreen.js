@@ -67,7 +67,7 @@ const HomeScreen = ({navigation}) => {
   const teacherData = [
     {
       image: require('../assets/teacher_img/1.jpg'),
-      title: 'Tilottama  Wankhede',
+      title: 'Miss Kartiki',
       edu: 'D.Ed, B.A, M.A(English)',
       sub: 'English[Std 5th to 10th]',
     },
@@ -128,7 +128,9 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       }
     };
-
+    if (user?.userData?.deviceId == null || user?.userData?.deviceId == '') {
+      navigation.navigate('Login');
+    }
     if (!user) {
       navigation.navigate('Login');
     } else if (user?.userID) {

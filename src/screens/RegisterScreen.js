@@ -100,7 +100,20 @@ const RegisterScreen = ({navigation}) => {
     if (!address) {
       errors.address = 'Address is required.';
     }
-
+    if (selectedCourses?.length <= 0) {
+      Alert.alert(
+        'Please Select at least One Course to proceed!',
+        ' ',
+        [
+          {
+            text: 'OK',
+            onPress: () => null,
+          },
+        ],
+        {cancelable: false},
+      );
+      errors.courses = 'courses not selected';
+    }
     setValidationErrors(errors);
 
     return Object.keys(errors).length === 0;

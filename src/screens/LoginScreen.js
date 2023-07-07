@@ -15,21 +15,20 @@ import {
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DeviceInfo from 'react-native-device-info';
 import api from '../utils/api';
+import DeviceInfo from 'react-native-device-info';
 const LoginScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
   const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const {signIn} = useContext(AuthContext);
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [deviceId, setDeviceId] = useState();
   DeviceInfo.getAndroidId().then(androidId => {
     setDeviceId(androidId);
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const handleLogin = async () => {
     try {
       if (username != '' && password != '') {
@@ -38,15 +37,15 @@ const LoginScreen = ({navigation}) => {
           const data = {
             username: username,
             password: password,
-            deviceId: deviceId ? deviceId : 'abc',
+            deviceId: deviceId,
           };
           params.append('username', username);
           params.append('password', password);
-          params.append('deviceId', deviceId ? deviceId : 'abc');
+          params.append('deviceId', deviceId);
 
           const str = JSON.stringify(data);
           const response = await api.post('auth.php', JSON.parse(str));
-          console.log('USERDATA FROM AUTH API', response?.data?.data);
+
           if (response?.data?.data?.deviceId == deviceId) {
             if (response?.data?.data?.token) {
               try {
@@ -58,7 +57,6 @@ const LoginScreen = ({navigation}) => {
                   userID: response?.data?.data?.id,
                   userName: username,
                   usertype: response?.data?.data?.usertype,
-                  deviceId: response?.data?.data?.deviceId,
                 };
                 signIn(userdata);
                 if (response.data.data?.usertype > 2) {
@@ -74,12 +72,12 @@ const LoginScreen = ({navigation}) => {
             }
           } else {
             Alert.alert(
-              'Seems you are already logged In from another device!',
-              'You will be automatically logged out from other device(s)',
+              'Your number is already logged in on another device',
+              'If you lost your mobile and trying to use it on your new device then contact on Help@srgeniusacademy.com!',
               [
                 {
                   text: 'OK',
-                  onPress: () => navigation.navigate(''),
+                  onPress: () => navigation.navigate('Login'),
                 },
               ],
               {cancelable: false},
