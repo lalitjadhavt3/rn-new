@@ -12,20 +12,18 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import Swiper from 'react-native-swiper';
 import api, {API_BASE_URL} from '../utils/api';
+import DeviceInfo from 'react-native-device-info';
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [courseData, setCourseData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const data = [
-    {image: require('../assets/image-17.png'), title: 'Slide 1'},
-    {image: require('../assets/image-18.png'), title: 'Slide 2'},
-    {image: require('../assets/image-19.png'), title: 'Slide 3'},
-    // Add more slides as needed
-  ];
+  const [deviceId, setDeviceId] = useState();
+  DeviceInfo.getAndroidId().then(androidId => {
+    setDeviceId(androidId);
+  });
   const alertPayment = () => {
     Alert.alert(
       'Payment Due',
@@ -111,7 +109,6 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     const getUserDetails = async () => {
       try {
-        console.log('user data passing to get stud info api', user?.userID);
         const response = await api.get('/student/apis/get_stud_info.php', {
           params: {
             user: user?.userData?.auth_id
@@ -125,7 +122,6 @@ const HomeScreen = ({navigation}) => {
           userID: response?.data?.data[0].id,
           userData: response?.data?.data[0],
         };
-        console.log('data changed of userid', data);
         signIn(data);
       } catch (error) {
         // Handle the error
