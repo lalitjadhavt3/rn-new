@@ -15,13 +15,19 @@ import {
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 import api from '../utils/api';
 const LoginScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
   const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const {signIn} = useContext(AuthContext);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [deviceId, setDeviceId] = useState();
+  DeviceInfo.getAndroidId().then(androidId => {
+    setDeviceId(androidId);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const handleLogin = async () => {
@@ -32,37 +38,52 @@ const LoginScreen = ({navigation}) => {
           const data = {
             username: username,
             password: password,
-            deviceId: 'abc',
+            deviceId: deviceId ? deviceId : 'abc',
           };
           params.append('username', username);
           params.append('password', password);
-          params.append('deviceId', 'abc');
+          params.append('deviceId', deviceId ? deviceId : 'abc');
 
           const str = JSON.stringify(data);
           const response = await api.post('auth.php', JSON.parse(str));
           console.log('USERDATA FROM AUTH API', response?.data?.data);
-          if (response?.data?.data?.token) {
-            try {
-              await AsyncStorage.setItem(
-                'authToken',
-                response?.data?.data?.token,
-              );
-              const userdata = {
-                userID: response?.data?.data?.id,
-                userName: username,
-                usertype: response?.data?.data?.usertype,
-              };
-              signIn(userdata);
-              if (response.data.data?.usertype > 2) {
-                navigation.navigate('Main');
-              } else {
-                //navigation.navigate('Join_Screen', Join);
+          if (response?.data?.data?.deviceId == deviceId) {
+            if (response?.data?.data?.token) {
+              try {
+                await AsyncStorage.setItem(
+                  'authToken',
+                  response?.data?.data?.token,
+                );
+                const userdata = {
+                  userID: response?.data?.data?.id,
+                  userName: username,
+                  usertype: response?.data?.data?.usertype,
+                  deviceId: response?.data?.data?.deviceId,
+                };
+                signIn(userdata);
+                if (response.data.data?.usertype > 2) {
+                  navigation.navigate('Main');
+                } else {
+                  //navigation.navigate('Join_Screen', Join);
+                }
+              } catch (error) {
+                console.error('Error storing encrypted credentials:', error);
               }
-            } catch (error) {
-              console.error('Error storing encrypted credentials:', error);
+            } else {
+              Alert.alert(response.data.message);
             }
           } else {
-            Alert.alert(response.data.message);
+            Alert.alert(
+              'Seems you are already logged In from another device!',
+              'You will be automatically logged out from other device(s)',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => navigation.navigate(''),
+                },
+              ],
+              {cancelable: false},
+            );
           }
         } else {
           Alert.alert('Please Enter Valid Mobile number');

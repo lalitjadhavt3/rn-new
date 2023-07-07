@@ -15,12 +15,16 @@ import {
   ActivityIndicator,
   useColorScheme,
 } from 'react-native';
-
+import DeviceInfo from 'react-native-device-info';
 import MultiSelect from 'react-native-multiple-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import api from '../utils/api';
 const RegisterScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
+  const [deviceId, setDeviceId] = useState();
+  DeviceInfo.getAndroidId().then(androidId => {
+    setDeviceId(androidId);
+  });
   const styles = colorScheme === 'dark' ? darkStyles : lightStyles;
   const [firstName, setFirstName] = React.useState('');
   const [middleName, setMiddleName] = React.useState('');
@@ -116,6 +120,7 @@ const RegisterScreen = ({navigation}) => {
           mobileNumber: mobileNumber,
           referralCode: referralCode,
           selectedCourses: selectedCourses,
+          deviceId: deviceId ? deviceId : null,
         };
         const checkMobile = async () => {
           try {

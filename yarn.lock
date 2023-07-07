@@ -6258,6 +6258,11 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
+"react-native-device-info@^10.7.0":
+  "integrity" "sha512-8PiuGwKFB/56mjl5uVuCFoBLZJonerJRS/CTPAsT1rbyrc9vDGAj93FmzYW9GBroKUtQwF2gSP2scQzMHB/rVg=="
+  "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-10.7.0.tgz"
+  "version" "10.7.0"
+
 "react-native-dotenv@^3.1.1":
   "integrity" "sha512-fg9F8X/cG1kDTwRLgLz3t+AMbsULoFHbUVltdQarmrJ3kNllD1Zq7ZgY85bp8BnPwk0DnYQzKbooiLsUoKd10w=="
   "resolved" "https://registry.npmjs.org/react-native-dotenv/-/react-native-dotenv-3.4.8.tgz"
