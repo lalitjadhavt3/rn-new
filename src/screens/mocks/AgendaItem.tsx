@@ -31,7 +31,21 @@ const AgendaItem = (props: ItemProps) => {
         },
         {
           text: 'JOIN',
-          onPress: () => item.type=='online'?navigationTest.navigate('Join_Screen', {joinLink: navigationLink,username:item.username}):navigationTest.navigate('OfflineLecture', {joinLink: navigationLink,username:item.username})
+          onPress: () =>{
+            if (item.type == 'Offline') {
+              navigationTest.navigate('OfflineLecture', {
+                joinLink: item.link,
+                username: item.username,
+              });
+            } else if (item.type == 'Youtube') {
+              navigationTest.navigate('YoutubeVideo', {
+                joinLink: item.link,
+                username: item?.username,
+              });
+            } else if (item.type == 'Online') {
+              Alert.alert('Online Lectures will be start soon!');
+            }
+          } 
         }
       ],
       { cancelable: true }
