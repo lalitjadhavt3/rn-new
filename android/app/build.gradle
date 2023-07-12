@@ -98,8 +98,8 @@ android {
         applicationId "com.srgstudent"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
     }
 
     splits {
@@ -129,6 +129,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            resValue "string", "CodePushDeploymentKey", '"ZleApmFZt_acyXvS2PsxtNLOoEDfeClDGNLzj"'
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -136,6 +137,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            resValue "string", "CodePushDeploymentKey", '"YezuXvv9WAvq-7TKGo4WOrj1nYL5V91vogPTQ"'
         }
     }
 
@@ -177,3 +179,4 @@ dependencies {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
