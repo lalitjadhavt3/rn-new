@@ -14,6 +14,7 @@ import {
 import {AuthContext} from '../context/AuthContext';
 import api, {API_BASE_URL} from '../utils/api';
 import DeviceInfo from 'react-native-device-info';
+import Orientation from 'react-native-orientation-locker';
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ const HomeScreen = ({navigation}) => {
       {cancelable: true},
     );
   };
-  const alertVideo = link => {
+  const alertVideo = (link, lesson_type) => {
     Alert.alert(
       'View Lecture',
       '',
@@ -54,11 +55,21 @@ const HomeScreen = ({navigation}) => {
         },
         {
           text: 'Join',
-          onPress: () =>
-            navigation.navigate('OfflineLecture', {
-              joinLink: link,
-              username: user?.username,
-            }),
+          onPress: () => {
+            if (lesson_type == 'Offline') {
+              navigation.navigate('OfflineLecture', {
+                joinLink: link,
+                username: user?.username,
+              });
+            } else if (lesson_type == 'Youtube') {
+              navigation.navigate('YoutubeVideo', {
+                joinLink: link,
+                username: user?.username,
+              });
+            } else if (lesson_type == 'Online') {
+              Alert.alert('Online Lectures will be start soon!');
+            }
+          },
         },
       ],
       {cancelable: true},
@@ -107,6 +118,7 @@ const HomeScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
+    Orientation.unlockAllOrientations();
     const getUserDetails = async () => {
       try {
         const response = await api.get('/student/apis/get_stud_info.php', {
@@ -231,7 +243,7 @@ const HomeScreen = ({navigation}) => {
                   key={lesson.lesson_id}
                   onPressIn={() => {
                     user?.userData?.payment_status == 'success'
-                      ? alertVideo(lesson?.lesson_link)
+                      ? alertVideo(lesson?.lesson_link, lesson?.lesson_type)
                       : alertPayment();
                   }}>
                   <Image
