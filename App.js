@@ -8,6 +8,7 @@ const codePushOptions = {
   deploymentKey: 'YezuXvv9WAvq-7TKGo4WOrj1nYL5V91vogPTQ',
   checkFrequency: codePush.CheckFrequency.ON_APP_START,
 };
+import './ignoreWarnings';
 const App = () => {
   return (
     <AuthProvider>
