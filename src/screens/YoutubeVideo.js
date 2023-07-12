@@ -30,37 +30,25 @@ const YoutubeVideo = ({navigation, route}) => {
     setRefreshCount(refreshCount + 1);
     setRefreshing(false);
   };
-  // const updateOrientation = () => {
-  //   console.log('ore', orientation);
-  //   const {width, height} = Dimensions.get('window');
-  //   if (width > height) {
-  //     setOrientation('landscape');
-  //   } else {
-  //     setOrientation('portrait');
-  //     if (orientation == 'portrait') {
-  //       Alert.alert(
-  //         'Change Orientation',
-  //         'Please rotate your device to landscape orientation.',
-  //         [
-  //           {
-  //             text: 'OK',
-  //             onPress: () => Orientation.lockToLandscapeLeft(),
-  //           },
-  //         ],
-  //         {cancelable: false},
-  //       );
-  //     }
-  //   }
-  // };
-  // useFocusEffect(() => {
-  //   updateOrientation();
+  const injectedJavaScript = `
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('copy', function(event) {
+      event.preventDefault();
+      return false;
+    });
 
-  //   // Listen to orientation change events
+    document.body.addEventListener('cut', function(event) {
+      event.preventDefault();
+      return false;
+    });
 
-  //   return () => {
-  //     Orientation.lockToPortrait();
-  //   };
-  // }, []);
+    document.body.addEventListener('paste', function(event) {
+      event.preventDefault();
+      return false;
+    });
+  });
+`;
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -100,6 +88,7 @@ const YoutubeVideo = ({navigation, route}) => {
         key={refreshCount} // Add key prop to force WebView remount on refresh
         style={{flex: 1}}
         source={{uri: webViewUrl}}
+        injectedJavaScript={injectedJavaScript}
       />
     </ScrollView>
   );
