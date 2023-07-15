@@ -62,10 +62,9 @@ const UserAccountSection = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              const data = {...user, courseSelected: ''};
-              signIn(data);
+              navigation.navigate('ResetPasswordScreen');
             }}>
-            <Text style={styles.buttonText}>Reset Course</Text>
+            <Text style={styles.buttonText}>Reset Password</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.contactButton}
