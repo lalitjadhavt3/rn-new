@@ -171,6 +171,7 @@ const HomeScreen = ({navigation}) => {
       <View
         style={[styles.loaderContainer, isDarkMode && styles.darkBackground]}>
         <ActivityIndicator size="large" />
+        <Text>Loading Data...</Text>
       </View>
     );
   }
