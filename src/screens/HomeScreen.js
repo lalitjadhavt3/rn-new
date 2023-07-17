@@ -118,7 +118,7 @@ const HomeScreen = ({navigation}) => {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    Orientation.unlockAllOrientations();
+    Orientation.lockToPortrait();
     const getUserDetails = async () => {
       try {
         const response = await api.get('/student/apis/get_stud_info.php', {
@@ -140,12 +140,7 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       }
     };
-    if (user?.userData?.deviceId == null || user?.userData?.deviceId == '') {
-      navigation.navigate('Login');
-    }
-    if (!user) {
-      navigation.navigate('Login');
-    } else if (user?.userID) {
+    if (user?.userID) {
       getUserDetails();
     }
   }, []);

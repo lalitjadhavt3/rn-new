@@ -12,6 +12,7 @@ import {
   Dimensions,
   Alert,
   useColorScheme,
+  ActivityIndicator,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,10 +45,12 @@ const LoginScreen = ({navigation}) => {
           params.append('deviceId', deviceId);
 
           const str = JSON.stringify(data);
+          setIsLoading(true);
           const response = await api.post('auth.php', JSON.parse(str));
+          setIsLoading(false);
 
-          if (response?.data?.data?.deviceId == deviceId) {
-            if (response?.data?.data?.token) {
+          if (response?.data?.data?.token) {
+            if (response?.data?.data?.deviceId == deviceId) {
               try {
                 await AsyncStorage.setItem(
                   'authToken',
@@ -68,20 +71,20 @@ const LoginScreen = ({navigation}) => {
                 console.error('Error storing encrypted credentials:', error);
               }
             } else {
-              Alert.alert(response.data.message);
+              Alert.alert(
+                'Your number is already logged in on another device',
+                'If you lost your mobile and trying to use it on your new device then contact on Help@srgeniusacademy.com!',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => navigation.navigate('Login'),
+                  },
+                ],
+                {cancelable: false},
+              );
             }
           } else {
-            Alert.alert(
-              'Your number is already logged in on another device',
-              'If you lost your mobile and trying to use it on your new device then contact on Help@srgeniusacademy.com!',
-              [
-                {
-                  text: 'OK',
-                  onPress: () => navigation.navigate('Login'),
-                },
-              ],
-              {cancelable: false},
-            );
+            Alert.alert(response.data.message);
           }
         } else {
           Alert.alert('Please Enter Valid Mobile number');
@@ -96,7 +99,14 @@ const LoginScreen = ({navigation}) => {
       console.log(error);
     }
   };
-
+  if (isLoading) {
+    return (
+      <View style={[styles.loaderContainer]}>
+        <ActivityIndicator size="large" />
+        <Text>Please Wait....</Text>
+      </View>
+    );
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -141,6 +151,7 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.buttonText}>REGISTER</Text>
         </TouchableOpacity>
       </View>
+
       {/* <TouchableOpacity style={styles.forgotPasswordButton}>
       <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
      </TouchableOpacity> */}
@@ -154,6 +165,11 @@ const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    alignItems: 'center',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
@@ -271,7 +287,11 @@ const darkStyles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
   },
-
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   logo: {
     width: 200,
     height: 200,
