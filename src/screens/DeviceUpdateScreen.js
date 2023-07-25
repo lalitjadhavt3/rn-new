@@ -42,7 +42,7 @@ const DeviceUpdateScreen = ({navigation, route}) => {
       },
     ];
     setWebviewUrl(
-      `${API_BASE_URL}/student/apis/student_device_update.php?data=${encodeURIComponent(
+      `${API_BASE_URL}student/apis/student_device_update.php?data=${encodeURIComponent(
         JSON.stringify(data),
       )}`,
     );

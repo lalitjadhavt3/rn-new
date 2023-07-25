@@ -10,6 +10,7 @@ import PaymentScreen from '../screens/PaymentScreen';
 import YoutubeVideo from '../screens/YoutubeVideo';
 import Orientation from 'react-native-orientation-locker';
 import ResetPassword from '../screens/ResetPasswordScreen';
+import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -97,6 +98,17 @@ const BottomTabNavigator = () => {
       <Tab.Screen
         name="ResetPasswordScreen"
         component={ResetPassword}
+        options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: 'none',
+          },
+          tabBarButton: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="DeviceUpdate"
+        component={DeviceUpdateScreen}
         options={{
           headerShown: false,
           tabBarStyle: {

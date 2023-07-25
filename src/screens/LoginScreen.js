@@ -40,14 +40,12 @@ const LoginScreen = ({navigation}) => {
             deviceId: deviceId,
           };
           params.append('username', username);
-
           params.append('deviceId', deviceId);
-
           const str = JSON.stringify(data);
           setIsLoading(true);
           const response = await api.post('auth.php', JSON.parse(str));
           setIsLoading(false);
-
+          console.log('current device id', response);
           if (response?.data?.data?.token) {
             console.log('current device id', deviceId);
             console.log('fetched device id', response?.data?.data?.deviceId);
@@ -94,8 +92,8 @@ const LoginScreen = ({navigation}) => {
             }
           } else if (response?.data?.message == 'Not Registered') {
             Alert.alert(
-              'Oops! Your Number is not registered with us. ',
-              'Kindly Click on Register Now Button to Continue',
+              'Please Register Once to Continue ',
+              'Kindly Click on Register Now Button',
               [
                 {
                   text: 'Cancel',

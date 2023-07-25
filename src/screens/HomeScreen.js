@@ -21,10 +21,9 @@ const HomeScreen = ({navigation}) => {
   const [courseData, setCourseData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const [deviceId, setDeviceId] = useState();
-  DeviceInfo.getAndroidId().then(androidId => {
-    setDeviceId(androidId);
-  });
+  const [loadingDeviceId, setLoadingDeviceId] = useState(true);
+  const [displayDevice, setDisplayDevice] = useState(false);
+
   const alertPayment = () => {
     Alert.alert(
       'Payment Due',
@@ -114,11 +113,12 @@ const HomeScreen = ({navigation}) => {
     },
     // Add more slides as needed
   ];
-  const {user, signIn} = useContext(AuthContext);
+  const {user, signIn, deviceId} = useContext(AuthContext);
   const colorScheme = useColorScheme();
 
   useEffect(() => {
     Orientation.lockToPortrait();
+
     const getUserDetails = async () => {
       try {
         const response = await api.get('/student/apis/get_stud_info.php', {
@@ -128,8 +128,11 @@ const HomeScreen = ({navigation}) => {
               : user?.userID,
           },
         });
+
         //console.log(response?.data);
+
         setUserData(response?.data?.data[0]);
+
         const data = {
           ...user,
           userID: response?.data?.data[0].id,
@@ -141,10 +144,34 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       }
     };
+
     if (user?.userID) {
       getUserDetails();
+      checkDeviceIds();
     }
   }, []);
+  const checkDeviceIds = () => {
+    console.log(deviceId);
+    console.log(user?.userData?.device_id);
+    // if (user?.userData?.device_id != deviceId) {
+    //   Alert.alert(
+    //     'Your Number is Already signed in another device. ',
+    //     'Click OK to Login Again',
+    //     [
+    //       {
+    //         text: 'Cancel',
+    //         onPress: () => navigation.navigate('Login'),
+    //         style: 'cancel',
+    //       },
+    //       {
+    //         text: 'OK',
+    //         onPress: () => navigation.navigate('Login'),
+    //       },
+    //     ],
+    //     {cancelable: false},
+    //   );
+    // }
+  };
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
@@ -167,6 +194,7 @@ const HomeScreen = ({navigation}) => {
     }
   }, [userData?.courses]);
   const isDarkMode = colorScheme === 'dark';
+
   if (loading) {
     return (
       <View
@@ -176,6 +204,7 @@ const HomeScreen = ({navigation}) => {
       </View>
     );
   }
+
   return (
     <ScrollView style={[styles.home, isDarkMode && styles.darkBackground]}>
       <View style={[styles.frameParent, styles.frameParentFlexBox]}>

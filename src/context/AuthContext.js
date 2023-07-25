@@ -1,11 +1,16 @@
 import React, {createContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [deviceId, setDeviceId] = useState();
+  DeviceInfo.getAndroidId().then(androidId => {
+    setDeviceId(androidId);
+  });
   useEffect(() => {
     const restoreUser = async () => {
       const userData = await AsyncStorage.getItem('user');
@@ -31,7 +36,7 @@ export const AuthProvider = ({children}) => {
 
   return (
     <AuthContext.Provider
-      value={{user, signIn, signOut, isLoading, setIsLoading}}>
+      value={{user, signIn, signOut, isLoading, setIsLoading, deviceId}}>
       {children}
     </AuthContext.Provider>
   );
