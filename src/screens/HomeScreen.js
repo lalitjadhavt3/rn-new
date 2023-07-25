@@ -43,10 +43,10 @@ const HomeScreen = ({navigation}) => {
       {cancelable: true},
     );
   };
-  const alertVideo = (link, lesson_type) => {
+  const alertVideo = (link, lesson_type, lesson_title) => {
     Alert.alert(
       'View Lecture',
-      '',
+      lesson_title,
       [
         {
           text: 'Cancel',
@@ -128,6 +128,7 @@ const HomeScreen = ({navigation}) => {
               : user?.userID,
           },
         });
+        //console.log(response?.data);
         setUserData(response?.data?.data[0]);
         const data = {
           ...user,
@@ -195,7 +196,7 @@ const HomeScreen = ({navigation}) => {
         </View>
         <View style={[styles.iconlyWrapper, styles.iconlyFlexBox]}>
           <TouchableOpacity
-            onPressIn={() => {
+            onPress={() => {
               Alert.alert('Feature coming soon');
             }}>
             <Image
@@ -237,9 +238,13 @@ const HomeScreen = ({navigation}) => {
                 <TouchableOpacity
                   style={styles.courseCard}
                   key={lesson.lesson_id}
-                  onPressIn={() => {
+                  onPress={() => {
                     user?.userData?.payment_status == 'success'
-                      ? alertVideo(lesson?.lesson_link, lesson?.lesson_type)
+                      ? alertVideo(
+                          lesson?.lesson_link,
+                          lesson?.lesson_type,
+                          lesson?.lesson_title,
+                        )
                       : alertPayment();
                   }}>
                   <Image

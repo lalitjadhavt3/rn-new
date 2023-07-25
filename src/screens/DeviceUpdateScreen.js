@@ -9,7 +9,7 @@ import {
 import {API_BASE_URL} from '../utils/api';
 import DeviceInfo from 'react-native-device-info';
 
-const NewRegisterScreen = ({navigation, route}) => {
+const DeviceUpdateScreen = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const colorScheme = useColorScheme();
   const [webViewUrl, setWebviewUrl] = useState('');
@@ -22,7 +22,7 @@ const NewRegisterScreen = ({navigation, route}) => {
     // Handle the message received from the WebView
     const messageFromWebView = event.nativeEvent.data;
     console.log('Message from WebView:', messageFromWebView);
-    if (messageFromWebView == 'Registration Completed') {
+    if (messageFromWebView == 'Device Updated') {
       navigation.navigate('Login');
     }
     // Perform any action in the React Native code based on the message received
@@ -42,7 +42,7 @@ const NewRegisterScreen = ({navigation, route}) => {
       },
     ];
     setWebviewUrl(
-      `${API_BASE_URL}/student/apis/register_student_f.php?data=${encodeURIComponent(
+      `${API_BASE_URL}/student/apis/student_device_update.php?data=${encodeURIComponent(
         JSON.stringify(data),
       )}`,
     );
@@ -77,7 +77,7 @@ const NewRegisterScreen = ({navigation, route}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      {console.log('registration url', webViewUrl)}
+      {console.log('device update url : ', webViewUrl)}
       <WebView
         key={refreshCount} // Add key prop to force WebView remount on refresh
         style={{flex: 1}}
@@ -93,4 +93,4 @@ const NewRegisterScreen = ({navigation, route}) => {
   );
 };
 
-export default NewRegisterScreen;
+export default DeviceUpdateScreen;

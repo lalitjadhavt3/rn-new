@@ -7,6 +7,7 @@ import {AuthContext} from '../context/AuthContext';
 import RegisterScreen from '../screens/RegisterScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import NewRegisterScreen from '../screens/NewRegisterScreen';
+import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
 import ResetPassword from '../screens/ResetPasswordScreen';
 const Stack = createStackNavigator();
 
@@ -47,6 +48,11 @@ const StackNavigator = () => {
             <Stack.Screen
               name="NewRegister"
               component={NewRegisterScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="DeviceUpdate"
+              component={DeviceUpdateScreen}
               options={{headerShown: false}}
             />
             <Stack.Screen

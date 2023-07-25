@@ -32,16 +32,15 @@ const LoginScreen = ({navigation}) => {
   });
   const handleLogin = async () => {
     try {
-      if (username != '' && password != '') {
+      if (username != '') {
         if (username.length == 10) {
           var params = new URLSearchParams();
           const data = {
             username: username,
-            password: password,
             deviceId: deviceId,
           };
           params.append('username', username);
-          params.append('password', password);
+
           params.append('deviceId', deviceId);
 
           const str = JSON.stringify(data);
@@ -50,6 +49,8 @@ const LoginScreen = ({navigation}) => {
           setIsLoading(false);
 
           if (response?.data?.data?.token) {
+            console.log('current device id', deviceId);
+            console.log('fetched device id', response?.data?.data?.deviceId);
             if (response?.data?.data?.deviceId == deviceId) {
               try {
                 await AsyncStorage.setItem(
@@ -72,17 +73,65 @@ const LoginScreen = ({navigation}) => {
               }
             } else {
               Alert.alert(
-                'Your number is already logged in on another device',
-                'If you lost your mobile and trying to use it on your new device then contact on Help@srgeniusacademy.com!',
+                'Your Number is Already signed in another device. ',
+                'Click OK to change device',
                 [
                   {
+                    text: 'Cancel',
+                    onPress: () => null,
+                    style: 'cancel',
+                  },
+                  {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Login'),
+                    onPress: () =>
+                      navigation.navigate('DeviceUpdate', {
+                        userMobile: username,
+                      }),
                   },
                 ],
                 {cancelable: false},
               );
             }
+          } else if (response?.data?.message == 'Not Registered') {
+            Alert.alert(
+              'Oops! Your Number is not registered with us. ',
+              'Kindly Click on Register Now Button to Continue',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+                {
+                  text: 'Register Now',
+                  onPress: () =>
+                    navigation.navigate('NewRegister', {
+                      userMobile: username,
+                    }),
+                },
+              ],
+              {cancelable: false},
+            );
+          } else if (response?.data?.message == 'Device Changed') {
+            Alert.alert(
+              'Your Number is Already signed in another device. ',
+              'Click OK to change device',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () =>
+                    navigation.navigate('DeviceUpdate', {
+                      userMobile: username,
+                    }),
+                },
+              ],
+              {cancelable: false},
+            );
           } else {
             Alert.alert(response.data.message);
           }
@@ -91,8 +140,6 @@ const LoginScreen = ({navigation}) => {
         }
       } else if (username == '') {
         Alert.alert('Please Enter Mobile number');
-      } else if (password == '') {
-        Alert.alert('Please Enter Password');
       }
     } catch (error) {
       // Handle login error
@@ -132,14 +179,7 @@ const LoginScreen = ({navigation}) => {
           onChangeText={setUsername}
           placeholderTextColor={colorScheme == 'dark' ? 'white' : 'grey'}
         />
-        <TextInput
-          placeholder="Enter Password"
-          secureTextEntry={true}
-          style={styles.inputField}
-          onChangeText={setPassword}
-          value={password}
-          placeholderTextColor={colorScheme == 'dark' ? 'white' : 'grey'}
-        />
+
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
