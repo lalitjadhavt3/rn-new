@@ -43,73 +43,86 @@ const LoginScreen = ({navigation}) => {
           params.append('deviceId', deviceId);
           const str = JSON.stringify(data);
           setIsLoading(true);
-          const response = await api.post('auth.php', JSON.parse(str));
+          const response = await api.post(
+            'student/apis/auth.php',
+            JSON.parse(str),
+          );
           setIsLoading(false);
-          console.log('current device id', response);
+          console.log(response?.data);
           if (response?.data?.data?.token) {
-            console.log('current device id', deviceId);
-            console.log('fetched device id', response?.data?.data?.deviceId);
-            if (response?.data?.data?.deviceId == deviceId) {
-              try {
-                await AsyncStorage.setItem(
-                  'authToken',
-                  response?.data?.data?.token,
-                );
-                const userdata = {
-                  userID: response?.data?.data?.id,
-                  userName: username,
-                  usertype: response?.data?.data?.usertype,
-                };
-                signIn(userdata);
-                if (response.data.data?.usertype > 2) {
-                  navigation.navigate('Main');
-                } else {
-                  //navigation.navigate('Join_Screen', Join);
-                }
-              } catch (error) {
-                console.error('Error storing encrypted credentials:', error);
-              }
-            } else {
-              Alert.alert(
-                'Your Number is Already signed in another device. ',
-                'Click OK to change device',
-                [
-                  {
-                    text: 'Cancel',
-                    onPress: () => null,
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'OK',
-                    onPress: () =>
-                      navigation.navigate('DeviceUpdate', {
-                        userMobile: username,
-                      }),
-                  },
-                ],
-                {cancelable: false},
-              );
-            }
+            navigation.navigate('OTP', {
+              userMobile: username,
+              register: true,
+              token: response?.data?.data?.token,
+              userID: response?.data?.data?.id,
+              userName: username,
+              usertype: response?.data?.data?.usertype,
+            });
+            // if (response?.data?.data?.deviceId == deviceId) {
+            //   try {
+            //     await AsyncStorage.setItem(
+            //       'authToken',
+            //       response?.data?.data?.token,
+            //     );
+            //     const userdata = {
+            //       userID: response?.data?.data?.id,
+            //       userName: username,
+            //       usertype: response?.data?.data?.usertype,
+            //     };
+            //     signIn(userdata);
+            //     if (response.data.data?.usertype > 2) {
+            //       navigation.navigate('Main');
+            //     } else {
+            //       //navigation.navigate('Join_Screen', Join);
+            //     }
+            //   } catch (error) {
+            //     console.error('Error storing encrypted credentials:', error);
+            //   }
+            // } else {
+            //   Alert.alert(
+            //     'Your Number is Already signed in another device. ',
+            //     'Click OK to change device',
+            //     [
+            //       {
+            //         text: 'Cancel',
+            //         onPress: () => null,
+            //         style: 'cancel',
+            //       },
+            //       {
+            //         text: 'OK',
+            //         onPress: () =>
+            //           navigation.navigate('DeviceUpdate', {
+            //             userMobile: username,
+            //           }),
+            //       },
+            //     ],
+            //     {cancelable: false},
+            //   );
+            // }
           } else if (response?.data?.message == 'Not Registered') {
-            Alert.alert(
-              'Please Register Once to Continue ',
-              'Kindly Click on Register Now Button',
-              [
-                {
-                  text: 'Cancel',
-                  onPress: () => null,
-                  style: 'cancel',
-                },
-                {
-                  text: 'Register Now',
-                  onPress: () =>
-                    navigation.navigate('NewRegister', {
-                      userMobile: username,
-                    }),
-                },
-              ],
-              {cancelable: false},
-            );
+            navigation.navigate('OTP', {
+              userMobile: username,
+              register: false,
+            });
+            // Alert.alert(
+            //   'Please Register Once to Continue ',
+            //   'Kindly Click on Register Now Button',
+            //   [
+            //     {
+            //       text: 'Cancel',
+            //       onPress: () => null,
+            //       style: 'cancel',
+            //     },
+            //     {
+            //       text: 'Register Now',
+            //       onPress: () =>
+            //         navigation.navigate('NewRegister', {
+            //           userMobile: username,
+            //         }),
+            //     },
+            //   ],
+            //   {cancelable: false},
+            // );
           } else if (response?.data?.message == 'Device Changed') {
             Alert.alert(
               'Your Number is Already signed in another device. ',
@@ -180,13 +193,6 @@ const LoginScreen = ({navigation}) => {
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.registerbutton}
-          onPress={() => {
-            navigation.navigate('NewRegister');
-          }}>
-          <Text style={styles.buttonText}>REGISTER</Text>
         </TouchableOpacity>
       </View>
 

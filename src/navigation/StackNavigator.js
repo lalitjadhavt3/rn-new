@@ -9,6 +9,7 @@ import PaymentScreen from '../screens/PaymentScreen';
 import NewRegisterScreen from '../screens/NewRegisterScreen';
 import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
 import ResetPassword from '../screens/ResetPasswordScreen';
+import OTPScreen from '../screens/OTPScreen';
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -48,6 +49,11 @@ const StackNavigator = () => {
             <Stack.Screen
               name="NewRegister"
               component={NewRegisterScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="OTP"
+              component={OTPScreen}
               options={{headerShown: false}}
             />
             <Stack.Screen

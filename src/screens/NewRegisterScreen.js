@@ -54,9 +54,6 @@ const NewRegisterScreen = ({navigation, route}) => {
     changeUrl();
   }, [colorScheme]);
 
-  const ongetMessage = e => {
-    console.log(e);
-  };
   useEffect(() => {
     const backAction = () => {
       setRefreshCount(0); // Reset refreshCount when navigating back
