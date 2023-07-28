@@ -26,24 +26,23 @@ const OTPScreen = ({navigation, route}) => {
     // Handle the message received from the WebView
     const messageFromWebView = event.nativeEvent.data;
     console.log('Message from WebView:', messageFromWebView);
+
     if (messageFromWebView != 'Verification Completed') {
-      if (messageFromWebView.message == 'Registration Completed') {
+      const msgwebview = JSON.parse(messageFromWebView);
+      console.log('Message object:', msgwebview.message);
+      if (msgwebview?.message == 'Registration Completed') {
+        console.log('Registration complete message', msgwebview);
         try {
           await AsyncStorage.setItem(
             'authToken',
-            messageFromWebView?.token ? messageFromWebView?.token : null,
+            msgwebview?.token ? msgwebview?.token : null,
           );
           const userdata = {
-            userID: route?.params?.userID,
-            userName: route?.params?.userName,
+            userID: msgwebview?.userID ? msgwebview?.userID : null,
             usertype: 3,
           };
           signIn(userdata);
-          if (userdata.usertype > 2) {
-            navigation.navigate('Main');
-          } else {
-            //navigation.navigate('Join_Screen', Join);
-          }
+          navigation.navigate('Main');
         } catch (error) {
           console.error('Error storing encrypted credentials:', error);
         }

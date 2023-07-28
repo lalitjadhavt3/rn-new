@@ -178,8 +178,9 @@ const LoginScreen = ({navigation}) => {
       </View>
       <View style={styles.content}>
         <Text style={styles.description}>
-          Use your mobile number and password for login purpose!
+          Use your mobile number and Enter OTP for Login!
         </Text>
+        <Text style={styles.description}>कृपया मोबाईल नंबर व ओटीपी टाका !</Text>
       </View>
       <View style={styles.formContainer}>
         <TextInput
@@ -241,7 +242,7 @@ const lightStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#002D62',
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 16,
   },
   formContainer: {
     width: width * 0.8,

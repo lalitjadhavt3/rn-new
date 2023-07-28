@@ -42,9 +42,27 @@ const HomeScreen = ({navigation}) => {
       {cancelable: true},
     );
   };
-  const alertVideo = (link, lesson_type, lesson_title) => {
+  const alertPaidLecture = () => {
     Alert.alert(
-      'View Lecture',
+      'Paid Lecture',
+      'This Video is not free for view.Kindly Pay the course fees to continue',
+      [
+        {
+          text: 'I Will browse free content',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'PAY NOW',
+          onPress: () => navigation.navigate('Payment'),
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+  const alertVideo = (link, lesson_type, lesson_title, course_name) => {
+    Alert.alert(
+      course_name,
       lesson_title,
       [
         {
@@ -129,15 +147,14 @@ const HomeScreen = ({navigation}) => {
           },
         });
 
-        //console.log(response?.data);
-
         setUserData(response?.data?.data[0]);
 
         const data = {
           ...user,
-          userID: response?.data?.data[0].id,
+          userID: response?.data?.data[0]?.id,
           userData: response?.data?.data[0],
         };
+
         signIn(data);
       } catch (error) {
         // Handle the error
@@ -148,11 +165,13 @@ const HomeScreen = ({navigation}) => {
     if (user?.userID) {
       getUserDetails();
       checkDeviceIds();
+    } else {
+      console.log('userdata not found', user);
     }
   }, []);
   const checkDeviceIds = () => {
     console.log(deviceId);
-    console.log(user?.userData?.device_id);
+    //console.log(user?.userData?.device_id);
     // if (user?.userData?.device_id != deviceId) {
     //   Alert.alert(
     //     'Your Number is Already signed in another device. ',
@@ -175,12 +194,15 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
-        const response = await api.get('/student/apis/get_course_details.php', {
-          params: {
-            courses: userData?.courses,
+        const response = await api.get(
+          '/student/apis/get_subject_details.php',
+          {
+            params: {
+              course_selected: user?.courseSelected,
+              userID: user?.userID,
+            },
           },
-        });
-
+        );
         setCourseData(response?.data?.data);
       } catch (error) {
         // Handle the error
@@ -246,8 +268,8 @@ const HomeScreen = ({navigation}) => {
         Your Courses
       </Text>
 
-      {courseData.map(course => (
-        <View key={course.course_id}>
+      {courseData.map(subject => (
+        <View key={subject.subject_id}>
           <View style={styles.frameContainer}>
             <View style={styles.learnflexWrapper}>
               <Text
@@ -256,24 +278,27 @@ const HomeScreen = ({navigation}) => {
                   styles.timeTypo,
                   isDarkMode && styles.darkText,
                 ]}>
-                {course.course_name}
+                {subject.subject_name}
               </Text>
             </View>
           </View>
 
           <ScrollView horizontal style={styles.scrollView}>
             <View style={styles.coursesContainer}>
-              {course.lessons.map(lesson => (
+              {subject.lessons.map(lesson => (
                 <TouchableOpacity
                   style={styles.courseCard}
                   key={lesson.lesson_id}
                   onPress={() => {
                     user?.userData?.payment_status == 'success'
-                      ? alertVideo(
-                          lesson?.lesson_link,
-                          lesson?.lesson_type,
-                          lesson?.lesson_title,
-                        )
+                      ? lesson?.lecture_fee_type == 'free'
+                        ? alertVideo(
+                            lesson?.lesson_link,
+                            lesson?.lesson_type,
+                            lesson?.lesson_title,
+                            lesson?.course_name,
+                          )
+                        : alertPaidLecture()
                       : alertPayment();
                   }}>
                   <Image
