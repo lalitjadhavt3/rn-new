@@ -10,6 +10,7 @@ import NewRegisterScreen from '../screens/NewRegisterScreen';
 import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
 import ResetPassword from '../screens/ResetPasswordScreen';
 import OTPScreen from '../screens/OTPScreen';
+import AllLectures from '../screens/AllLectures';
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -54,6 +55,11 @@ const StackNavigator = () => {
             <Stack.Screen
               name="OTP"
               component={OTPScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="AllLectures"
+              component={AllLectures}
               options={{headerShown: false}}
             />
             <Stack.Screen

@@ -11,6 +11,7 @@ import YoutubeVideo from '../screens/YoutubeVideo';
 import Orientation from 'react-native-orientation-locker';
 import ResetPassword from '../screens/ResetPasswordScreen';
 import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
+import AllLectures from '../screens/AllLectures';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -76,6 +77,17 @@ const BottomTabNavigator = () => {
       <Tab.Screen
         name="RegisterScreen"
         component={Register}
+        options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: 'none',
+          },
+          tabBarButton: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="AllLectures"
+        component={AllLectures}
         options={{
           headerShown: false,
           tabBarStyle: {

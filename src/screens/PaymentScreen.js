@@ -26,7 +26,6 @@ const PaymentScreen = ({navigation}) => {
   const webViewUrl = `${API_BASE_URL}pay/cart.php?data=${encodeURIComponent(
     JSON.stringify(data),
   )}`;
-  console.log(webViewUrl);
 
   useEffect(() => {
     const backAction = () => {

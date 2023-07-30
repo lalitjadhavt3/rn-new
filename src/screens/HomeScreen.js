@@ -17,6 +17,7 @@ import DeviceInfo from 'react-native-device-info';
 import Orientation from 'react-native-orientation-locker';
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
+  const [bannerImages, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [courseData, setCourseData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -161,10 +162,21 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       }
     };
+    const getBanners = async () => {
+      try {
+        const response = await api.get('/student/apis/get_banners.php', {});
 
+        setBanners(response?.data?.data);
+        console.log(response?.data?.data);
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      }
+    };
     if (user?.userID) {
       getUserDetails();
       checkDeviceIds();
+      getBanners();
     } else {
       console.log('userdata not found', user);
     }
@@ -215,6 +227,15 @@ const HomeScreen = ({navigation}) => {
       fetchCourseData();
     }
   }, [userData?.courses]);
+  const btnMoreLectures = () => {
+    user?.userData?.payment_status != 'success'
+      ? navigation.navigate('Payment')
+      : navigation.navigate('AllLectures', {
+          subjectName: subject_name,
+          subjectId: subject_id,
+        });
+  };
+
   const isDarkMode = colorScheme === 'dark';
 
   if (loading) {
@@ -259,16 +280,134 @@ const HomeScreen = ({navigation}) => {
         </View>
       </View>
 
+      <ScrollView horizontal style={styles.scrollBanner}>
+        <View style={styles.coursesContainer}>
+          {user?.userData?.payment_status == 'success' &&
+            bannerImages.map((item, index) => {
+              return (
+                <View key={index} style={{flex: 1}}>
+                  <Image
+                    style={{
+                      width: 300,
+                      height: 200,
+                      borderColor: 'grey',
+                      elevation: 2,
+                      margin: 10,
+                      borderRadius: 10,
+                    }}
+                    source={{
+                      uri: API_BASE_URL + 'admin/' + item.image,
+                    }}
+                  />
+                </View>
+              );
+            })}
+        </View>
+      </ScrollView>
       <Text
         style={[
           styles.findACourse,
           styles.all1Clr,
           isDarkMode && styles.darkText,
         ]}>
-        Your Courses
+        Content for You
       </Text>
-
       {courseData.map(subject => (
+        <View key={subject.subject_id}>
+          <View style={styles.frameContainer}>
+            <View style={styles.learnflexWrapper}>
+              <Text
+                style={[
+                  styles.learnflex,
+                  styles.timeTypo,
+                  isDarkMode && styles.darkText,
+                ]}>
+                {subject.subject_name}
+              </Text>
+            </View>
+          </View>
+
+          <ScrollView horizontal style={styles.scrollView}>
+            <View style={styles.coursesContainer}>
+              {subject.lessons.slice(0, 5).map(
+                (
+                  lesson, // Slice the first 5 lessons
+                ) => (
+                  <TouchableOpacity
+                    style={styles.courseCard}
+                    key={lesson.lesson_id}
+                    onPress={() => {
+                      user?.userData?.payment_status == 'success'
+                        ? alertVideo(
+                            lesson?.lesson_link,
+                            lesson?.lesson_type,
+                            lesson?.lesson_title,
+                            lesson?.course_name,
+                          )
+                        : user?.userData?.payment_status != 'success' &&
+                          lesson?.lecture_fee_type == 'free'
+                        ? alertVideo(
+                            lesson?.lesson_link,
+                            lesson?.lesson_type,
+                            lesson?.lesson_title,
+                            lesson?.course_name,
+                          )
+                        : user?.userData?.payment_status != 'success' &&
+                          lesson?.lecture_fee_type == 'paid' &&
+                          alertPaidLecture();
+                    }}>
+                    {user?.userData?.payment_status != 'success' &&
+                      lesson.lecture_fee_type == 'free' && (
+                        <View style={styles.freeTag}>
+                          <Text style={{color: '#fff'}}>Free</Text>
+                        </View>
+                      )}
+                    <Image
+                      style={styles.courseImage}
+                      resizeMode="cover"
+                      source={{
+                        uri: API_BASE_URL + 'admin/' + lesson.lesson_bg_image,
+                      }}
+                    />
+                    <Text
+                      style={[
+                        styles.courseTitle,
+                        isDarkMode && styles.darkText2,
+                      ]}>
+                      {lesson.lesson_title}
+                    </Text>
+                  </TouchableOpacity>
+                ),
+              )}
+            </View>
+
+            {subject.lessons.length > 4 && ( // Check if there are more than 5 lessons
+              <TouchableOpacity
+                style={styles.seeMoreBtn}
+                onPressIn={() => {
+                  navigation.navigate('AllLectures', {
+                    subjectName: subject?.subject_name,
+                    subjectId: subject?.subject_id,
+                  });
+                }}>
+                {user?.userData?.payment_status == 'success' && (
+                  <View style={styles.learnflexWrapper}>
+                    <Text
+                      style={[
+                        styles.learnflex,
+                        styles.seeMoreText,
+                        isDarkMode && styles.darkText,
+                      ]}>
+                      See More
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            )}
+          </ScrollView>
+        </View>
+      ))}
+      {/* {courseData.map(subject => (
         <View key={subject.subject_id}>
           <View style={styles.frameContainer}>
             <View style={styles.learnflexWrapper}>
@@ -291,16 +430,30 @@ const HomeScreen = ({navigation}) => {
                   key={lesson.lesson_id}
                   onPress={() => {
                     user?.userData?.payment_status == 'success'
-                      ? lesson?.lecture_fee_type == 'free'
-                        ? alertVideo(
-                            lesson?.lesson_link,
-                            lesson?.lesson_type,
-                            lesson?.lesson_title,
-                            lesson?.course_name,
-                          )
-                        : alertPaidLecture()
-                      : alertPayment();
+                      ? alertVideo(
+                          lesson?.lesson_link,
+                          lesson?.lesson_type,
+                          lesson?.lesson_title,
+                          lesson?.course_name,
+                        )
+                      : user?.userData?.payment_status != 'success' &&
+                        lesson?.lecture_fee_type == 'free'
+                      ? alertVideo(
+                          lesson?.lesson_link,
+                          lesson?.lesson_type,
+                          lesson?.lesson_title,
+                          lesson?.course_name,
+                        )
+                      : user?.userData?.payment_status != 'success' &&
+                        lesson?.lecture_fee_type == 'paid' &&
+                        alertPaidLecture();
                   }}>
+                  {user?.userData?.payment_status != 'success' &&
+                    lesson.lecture_fee_type == 'free' && (
+                      <View style={styles.freeTag}>
+                        <Text style={{color: '#fff'}}>Free</Text>
+                      </View>
+                    )}
                   <Image
                     style={styles.courseImage}
                     resizeMode="cover"
@@ -318,9 +471,47 @@ const HomeScreen = ({navigation}) => {
                 </TouchableOpacity>
               ))}
             </View>
+
+            <TouchableOpacity
+              style={styles.seeMoreBtn}
+              onPressIn={() => {
+                navigation.navigate('AllLectures', {
+                  subjectName: subject?.subject_name,
+                  subjectId: subject?.subject_id,
+                });
+              }}>
+              {user?.userData?.payment_status == 'success' && (
+                <View style={styles.learnflexWrapper}>
+                  <Text
+                    style={[
+                      styles.learnflex,
+                      styles.seeMoreText,
+                      isDarkMode && styles.darkText,
+                    ]}>
+                    See More
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
           </ScrollView>
         </View>
-      ))}
+      ))} */}
+      <TouchableOpacity
+        style={styles.frameContainer}
+        onPress={() => {
+          btnMoreLectures();
+        }}>
+        <View style={styles.learnflexWrapper}>
+          <Text
+            style={[
+              styles.learnflex,
+              styles.moreLectures,
+              isDarkMode && styles.darkText,
+            ]}>
+            More Lectures
+          </Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.frameContainer}>
         <View style={styles.learnflexWrapper}>
           <Text
@@ -434,7 +625,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   findACourse: {
-    marginTop: 47,
+    marginTop: '2%',
     fontSize: 24,
     fontWeight: '700',
     paddingHorizontal: 16,
@@ -445,6 +636,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     marginBottom: 10,
+  },
+  seeMoreBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 5,
+    marginBottom: 10,
+    marginEnd: 30,
+    color: 'red',
+  },
+  seeMoreText: {
+    color: 'tomato',
   },
   learnflexWrapper: {
     flex: 1,
@@ -520,15 +723,22 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   scrollView: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginBottom: 16,
-    marginHorizontal: 20,
-    paddingRight: 150,
+    marginHorizontal: 10,
+    paddingRight: 50,
+  },
+  scrollBanner: {
+    paddingHorizontal: 10,
+    marginBottom: 16,
+    marginHorizontal: 10,
+    paddingRight: 50,
+    marginTop: '10%',
   },
   coursesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 40,
+    marginRight: 20,
   },
   courseCard: {
     marginRight: 12,
@@ -537,6 +747,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#F4F4F4',
     padding: 12,
+  },
+  freeTag: {
+    position: 'absolute',
+    top: '2%',
+    right: 0,
+    zIndex: 1,
+    width: '50%',
+    height: 20,
+    left: '70%',
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
   },
   courseImage: {
     width: '100%',
@@ -548,6 +771,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  moreLectures: {
+    fontSize: 14,
+    textAlign: 'right',
+    color: 'skyblue',
   },
   darkText: {
     color: '#fff',
