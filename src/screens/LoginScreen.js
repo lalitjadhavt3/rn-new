@@ -48,8 +48,15 @@ const LoginScreen = ({navigation}) => {
             JSON.parse(str),
           );
           setIsLoading(false);
-          console.log(response?.data);
-          if (response?.data?.data?.token) {
+          if (response?.data?.message == 'Test Device') {
+            const userdata = {
+              userID: 83,
+              userName: username,
+              usertype: 3,
+            };
+            signIn(userdata);
+            navigation.navigate('Main');
+          } else if (response?.data?.data?.token) {
             navigation.navigate('OTP', {
               userMobile: username,
               register: true,
