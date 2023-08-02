@@ -291,7 +291,6 @@ const HomeScreen = ({navigation}) => {
                       width: 300,
                       height: 200,
                       borderColor: 'grey',
-                      elevation: 2,
                       margin: 10,
                       borderRadius: 10,
                     }}
@@ -381,7 +380,7 @@ const HomeScreen = ({navigation}) => {
               )}
             </View>
 
-            {subject.lessons.length > 4 && ( // Check if there are more than 5 lessons
+            {subject.lessons.length > 4 && user?.userData?.payment_status == 'success' && ( // Check if there are more than 5 lessons
               <TouchableOpacity
                 style={styles.seeMoreBtn}
                 onPressIn={() => {

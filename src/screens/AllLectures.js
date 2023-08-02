@@ -7,27 +7,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  useColorScheme,
+  ActivityIndicator
 } from 'react-native';
 import CourseModal from '../components/CourseModal';
 import {AuthContext} from '../context/AuthContext';
-const data = [
-  {
-    id: '1',
-    lessonTitle: 'Course 1',
-    lessonDescription: 'Free Hrtml asdfnkajdf sad',
-    imageSource: require('../assets/calendar.png'),
-  },
-  {
-    id: '2',
-    lessonTitle: 'Course 2',
-    lessonDescription: 'Free Hrtml asdfnkajdf sad Free Hrtml asdfnkajdf sad ',
-    imageSource: require('../assets/image-20.png'),
-  },
-  // Add more data objects as needed
-];
 
 const AllLectures = ({navigation, route}) => {
   const {subjectId, subjectName} = route.params;
+  console.log(subjectId,subjectName)
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   const [courseData, setCourseData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true); // Added loading state
@@ -44,6 +34,7 @@ const AllLectures = ({navigation, route}) => {
   useEffect(() => {
     const fetchCourseData = async subjectId => {
       try {
+        setLoading(true)
         const response = await api.get('/student/apis/get_lesson_list.php', {
           params: {
             subjectId: subjectId != undefined ? subjectId : null,
@@ -51,8 +42,9 @@ const AllLectures = ({navigation, route}) => {
             courseId: user?.courseSelected,
           },
         });
-
+       
         setCourseData(response?.data?.data);
+        setLoading(false);
       } catch (error) {
         // Handle the error
         console.error(error);
@@ -61,17 +53,20 @@ const AllLectures = ({navigation, route}) => {
       }
     };
     if (subjectId) {
+      
       fetchCourseData(subjectId);
+      setLoading(false)
     } else {
       fetchCourseData();
     }
-  }, []);
-  if (loading && !modalVisible) {
+  }, [subjectId]);
+  if (loading) {
     return (
-      <CourseModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
+      <View
+        style={[styles.loaderContainer, isDarkMode && styles.darkBackground]}>
+        <ActivityIndicator size="large" />
+        <Text>Loading Data...</Text>
+      </View>
     );
   } else {
     return (
@@ -79,7 +74,7 @@ const AllLectures = ({navigation, route}) => {
         <Text style={styles.subjectTitle}>
           {subjectName ? subjectName : 'All Videos'}
         </Text>
-        {courseData.map((item, index) => (
+        {courseData?.map((item, index) => (
           <View key={index} style={styles.card}>
             <View style={styles.imageContainer}>
               <Image
@@ -112,6 +107,14 @@ const AllLectures = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  darkBackground: {
+    backgroundColor: '#000',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   subjectTitle: {
     fontSize: 30,
     margin: 20,
