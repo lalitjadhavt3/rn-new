@@ -167,7 +167,6 @@ const HomeScreen = ({navigation}) => {
         const response = await api.get('/student/apis/get_banners.php', {});
 
         setBanners(response?.data?.data);
-        console.log(response?.data?.data);
       } catch (error) {
         // Handle the error
         console.error(error);
@@ -175,7 +174,7 @@ const HomeScreen = ({navigation}) => {
     };
     if (user?.userID) {
       getUserDetails();
-      checkDeviceIds();
+      //checkDeviceIds();
       getBanners();
     } else {
       console.log('userdata not found', user);
@@ -227,11 +226,10 @@ const HomeScreen = ({navigation}) => {
       fetchCourseData();
     }
   }, [userData?.courses]);
-  const btnMoreLectures = () => {
+  const btnMoreLectures = subject_id => {
     user?.userData?.payment_status != 'success'
       ? navigation.navigate('Payment')
       : navigation.navigate('AllLectures', {
-          subjectName: subject_name,
           subjectId: subject_id,
         });
   };
@@ -380,29 +378,29 @@ const HomeScreen = ({navigation}) => {
               )}
             </View>
 
-            {subject.lessons.length > 4 && user?.userData?.payment_status == 'success' && ( // Check if there are more than 5 lessons
-              <TouchableOpacity
-                style={styles.seeMoreBtn}
-                onPressIn={() => {
-                  navigation.navigate('AllLectures', {
-                    subjectName: subject?.subject_name,
-                    subjectId: subject?.subject_id,
-                  });
-                }}>
-                {user?.userData?.payment_status == 'success' && (
-                  <View style={styles.learnflexWrapper}>
-                    <Text
-                      style={[
-                        styles.learnflex,
-                        styles.seeMoreText,
-                        isDarkMode && styles.darkText,
-                      ]}>
-                      See More
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            )}
+            {subject.lessons.length > 4 &&
+              user?.userData?.payment_status == 'success' && ( // Check if there are more than 5 lessons
+                <TouchableOpacity
+                  style={styles.seeMoreBtn}
+                  onPressIn={() => {
+                    navigation.navigate('AllLectures', {
+                      subjectId: subject?.subject_id,
+                    });
+                  }}>
+                  {user?.userData?.payment_status == 'success' && (
+                    <View style={styles.learnflexWrapper}>
+                      <Text
+                        style={[
+                          styles.learnflex,
+                          styles.seeMoreText,
+                          isDarkMode && styles.darkText,
+                        ]}>
+                        See More
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              )}
           </ScrollView>
         </View>
       ))}
@@ -498,7 +496,9 @@ const HomeScreen = ({navigation}) => {
       <TouchableOpacity
         style={styles.frameContainer}
         onPress={() => {
-          btnMoreLectures();
+          navigation.navigate('AllLectures', {
+            subjectId: null,
+          });
         }}>
         <View style={styles.learnflexWrapper}>
           <Text
