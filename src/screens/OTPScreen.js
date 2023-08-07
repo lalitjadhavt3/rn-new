@@ -59,7 +59,7 @@ const OTPScreen = ({navigation, route}) => {
           usertype: route?.params?.usertype,
         };
         signIn(userdata);
-        if (response.data.data?.usertype > 2) {
+        if (route?.params?.usertype > 2) {
           navigation.navigate('Main');
         } else {
           //navigation.navigate('Join_Screen', Join);
