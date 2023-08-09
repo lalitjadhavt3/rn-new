@@ -496,9 +496,11 @@ const HomeScreen = ({navigation}) => {
       <TouchableOpacity
         style={styles.frameContainer}
         onPress={() => {
-          navigation.navigate('AllLectures', {
-            subjectId: null,
-          });
+          user?.userData?.payment_status != 'success'
+            ? navigation.navigate('Payment')
+            : navigation.navigate('AllLectures', {
+                subjectId: null,
+              });
         }}>
         <View style={styles.learnflexWrapper}>
           <Text
