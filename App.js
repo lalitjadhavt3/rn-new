@@ -6,7 +6,7 @@ import codePush from 'react-native-code-push';
 const codePushOptions = {
   installMode: codePush.InstallMode.IMMEDIATE,
   deploymentKey: 'YezuXvv9WAvq-7TKGo4WOrj1nYL5V91vogPTQ',
-  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 };
 import './ignoreWarnings';
 const App = () => {
