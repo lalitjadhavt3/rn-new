@@ -5,7 +5,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import {AuthContext} from '../context/AuthContext';
 import RegisterScreen from '../screens/RegisterScreen';
-import PaymentScreen from '../screens/PaymentScreen';
+import PaymentScreen from '../screens/PaymentScreenOld';
 import NewRegisterScreen from '../screens/NewRegisterScreen';
 import DeviceUpdateScreen from '../screens/DeviceUpdateScreen';
 import ResetPassword from '../screens/ResetPasswordScreen';

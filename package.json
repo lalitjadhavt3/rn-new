@@ -33,6 +33,7 @@
     "react-native-hyperlink": "^0.0.22",
     "react-native-keychain": "^8.1.1",
     "react-native-multiple-select": "^0.5.12",
+    "react-native-onesignal": "^5.0.0",
     "react-native-orientation-locker": "^1.5.0",
     "react-native-reanimated": "^3.2.0",
     "react-native-responsive-fontsize": "^0.5.1",
@@ -42,6 +43,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-version-check": "^3.4.7",
     "react-native-video": "^5.2.1",
     "react-native-webview": "^13.2.2",
     "reactotron-react-native": "^5.0.3"

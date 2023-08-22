@@ -40,6 +40,16 @@
                     android:host="srgeniusacademy.com"
                     android:pathPattern="/page.*" />
             </intent-filter>
+            <intent-filter>
+                <!-- This intent filter handles your deep links -->
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Replace with your deep link scheme, host, and path pattern -->
+                <data
+                    android:scheme="market"
+                    android:pathPattern="/details\..*" />
+            </intent-filter>
         </activity>
     </application>
 </manifest>
