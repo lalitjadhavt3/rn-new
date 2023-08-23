@@ -15,6 +15,7 @@ import {AuthContext} from '../context/AuthContext';
 import api, {API_BASE_URL} from '../utils/api';
 import DeviceInfo from 'react-native-device-info';
 import Orientation from 'react-native-orientation-locker';
+import {OneSignal} from 'react-native-onesignal';
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const [bannerImages, setBanners] = useState([]);
@@ -140,16 +141,20 @@ const HomeScreen = ({navigation}) => {
 
     const getUserDetails = async () => {
       try {
+        const osDeviceId =
+          OneSignal.User.pushSubscription.getPushSubscriptionId();
+        console.log(osDeviceId);
         const response = await api.get('/student/apis/get_stud_info.php', {
           params: {
             user: user?.userData?.auth_id
               ? user?.userData?.auth_id
               : user?.userID,
+            osDeviceId: osDeviceId,
           },
         });
 
         setUserData(response?.data?.data[0]);
-
+        //console.log(response?.data);
         const data = {
           ...user,
           userID: response?.data?.data[0]?.id,

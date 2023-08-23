@@ -16,6 +16,15 @@ const codePushOptions = {
 };
 import './ignoreWarnings';
 const App = () => {
+  OneSignal.initialize('dd823ca4-d19f-4786-af77-d3128c8b800d');
+
+  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+
+  OneSignal.Notifications.requestPermission(true);
+
+  OneSignal.Notifications.addEventListener('click', event => {
+    console.log('OneSignal: notification clicked:', event);
+  });
   useEffect(() => {
     VersionCheck.getLatestVersion({
       provider: 'playStore', // for Android
@@ -39,15 +48,6 @@ const App = () => {
       }
     });
   }, []);
-  OneSignal.initialize('dd823ca4-d19f-4786-af77-d3128c8b800d');
-
-  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-
-  OneSignal.Notifications.requestPermission(true);
-
-  OneSignal.Notifications.addEventListener('click', event => {
-    console.log('OneSignal: notification clicked:', event);
-  });
   return (
     <AuthProvider>
       <NavigationContainer>
