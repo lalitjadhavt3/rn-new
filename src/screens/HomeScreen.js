@@ -331,10 +331,8 @@ const HomeScreen = ({navigation}) => {
 
           <ScrollView horizontal style={styles.scrollView}>
             <View style={styles.coursesContainer}>
-              {subject.lessons.slice(0, 5).map(
-                (
-                  lesson, // Slice the first 5 lessons
-                ) => (
+              {subject.lessons.slice(0, 5).map(lesson =>
+                lesson.lecture_display ? (
                   <TouchableOpacity
                     style={styles.courseCard}
                     key={lesson.lesson_id}
@@ -379,7 +377,7 @@ const HomeScreen = ({navigation}) => {
                       {lesson.lesson_title}
                     </Text>
                   </TouchableOpacity>
-                ),
+                ) : null,
               )}
             </View>
 

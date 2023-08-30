@@ -2041,6 +2041,11 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/slider/-/slider-4.4.2.tgz"
   "version" "4.4.2"
 
+"@react-native-picker/picker@^2.5.0":
+  "integrity" "sha512-AEZPKwXavmP4VkUUD6bskCrNF+zgd1RvsXJ208YewZSikGZCo0RLlnQxPDrdKoFpbigSYxbvRU5d8h3TzzeQ8Q=="
+  "resolved" "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.5.0.tgz"
+  "version" "2.5.0"
+
 "@react-native-windows/cli@0.72.3":
   "integrity" "sha512-wh28U9us97U3i7V5MZiFuMiIsMe6bMplt6NHtmeXDjYrNAKjbBLum3RR0DFE3AF04pUnEL6aASs10ZIO6aq4hQ=="
   "resolved" "https://registry.npmjs.org/@react-native-windows/cli/-/cli-0.72.3.tgz"
@@ -8105,7 +8110,7 @@
     "react-shallow-renderer" "^16.15.0"
     "scheduler" "^0.23.0"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^18.2.0", "react@>= 15.2.1", "react@>=16.0", "react@>=16.13.1", "react@>=16.8", "react@>=17.0.0", "react@>16.6.0", "react@18.2.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^18.2.0", "react@>= 15.2.1", "react@>=16", "react@>=16.0", "react@>=16.13.1", "react@>=16.8", "react@>=17.0.0", "react@>16.6.0", "react@18.2.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"

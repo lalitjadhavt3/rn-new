@@ -123,43 +123,13 @@ const AllLectures = ({navigation, route}) => {
 
         <ScrollView style={styles.courseContainer}>
           {courseData
-            ? courseData?.map((item, index) => (
-                <View key={index} style={styles.card}>
-                  <View style={styles.imageContainer}>
-                    <Image
-                      source={{
-                        uri: API_BASE_URL + 'admin/' + item.lesson_bg_image,
-                      }}
-                      style={styles.image}
-                      resizeMode="cover"
-                    />
-                  </View>
-                  <View style={styles.detailsContainer}>
-                    <Text style={styles.lessonTitle}>{item.lesson_title}</Text>
-                    <Text style={styles.lessonDescription}> </Text>
-                    <View style={styles.detailsPlayBtn}>
-                      <TouchableOpacity
-                        style={styles.playButton}
-                        onPressIn={() => {
-                          navigation.navigate('YoutubeVideo', {
-                            joinLink: item?.lesson_link,
-                            username: user?.username,
-                          });
-                        }}>
-                        <Text style={styles.playButtonText}>Play</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              ))
-            : subjectList?.map((subjects, index) =>
-                subjects?.lessons?.map((lessons, index2) => (
-                  <View key={index2} style={styles.card}>
+            ? courseData?.map((item, index) =>
+                item.lecture_display ? (
+                  <View key={index} style={styles.card}>
                     <View style={styles.imageContainer}>
                       <Image
                         source={{
-                          uri:
-                            API_BASE_URL + 'admin/' + lessons.lesson_bg_image,
+                          uri: API_BASE_URL + 'admin/' + item.lesson_bg_image,
                         }}
                         style={styles.image}
                         resizeMode="cover"
@@ -167,7 +137,7 @@ const AllLectures = ({navigation, route}) => {
                     </View>
                     <View style={styles.detailsContainer}>
                       <Text style={styles.lessonTitle}>
-                        {lessons.lesson_title}
+                        {item.lesson_title}
                       </Text>
                       <Text style={styles.lessonDescription}> </Text>
                       <View style={styles.detailsPlayBtn}>
@@ -175,7 +145,7 @@ const AllLectures = ({navigation, route}) => {
                           style={styles.playButton}
                           onPressIn={() => {
                             navigation.navigate('YoutubeVideo', {
-                              joinLink: lessons?.lesson_link,
+                              joinLink: item?.lesson_link,
                               username: user?.username,
                             });
                           }}>
@@ -184,7 +154,43 @@ const AllLectures = ({navigation, route}) => {
                       </View>
                     </View>
                   </View>
-                )),
+                ) : null,
+              )
+            : subjectList?.map((subjects, index) =>
+                subjects?.lessons?.map((lessons, index2) =>
+                  lessons.lecture_display ? (
+                    <View key={index2} style={styles.card}>
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={{
+                            uri:
+                              API_BASE_URL + 'admin/' + lessons.lesson_bg_image,
+                          }}
+                          style={styles.image}
+                          resizeMode="cover"
+                        />
+                      </View>
+                      <View style={styles.detailsContainer}>
+                        <Text style={styles.lessonTitle}>
+                          {lessons.lesson_title}
+                        </Text>
+                        <Text style={styles.lessonDescription}> </Text>
+                        <View style={styles.detailsPlayBtn}>
+                          <TouchableOpacity
+                            style={styles.playButton}
+                            onPressIn={() => {
+                              navigation.navigate('YoutubeVideo', {
+                                joinLink: lessons?.lesson_link,
+                                username: user?.username,
+                              });
+                            }}>
+                            <Text style={styles.playButtonText}>Play</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  ) : null,
+                ),
               )}
         </ScrollView>
       </View>
