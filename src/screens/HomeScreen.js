@@ -10,12 +10,16 @@ import {
   Alert,
   Modal,
   ActivityIndicator,
+  Button,
 } from 'react-native';
+import {Person, Cart} from '../assets/icons';
 import {AuthContext} from '../context/AuthContext';
 import api, {API_BASE_URL} from '../utils/api';
 import DeviceInfo from 'react-native-device-info';
 import Orientation from 'react-native-orientation-locker';
 import {OneSignal} from 'react-native-onesignal';
+import {primaryBg} from '../../GlobalStyles';
+
 const HomeScreen = ({navigation}) => {
   const [userData, setUserData] = useState([]);
   const [bannerImages, setBanners] = useState([]);
@@ -115,7 +119,7 @@ const HomeScreen = ({navigation}) => {
     },
     {
       image: require('../assets/teacher_img/4.jpg'),
-      title: 'Mayuresh Sahastrabuddhe',
+      title: 'Mayuresh Sir',
       edu: 'M.Sc(Maths)(Chemistry), B.Ed',
       sub: 'Maths[Std 8th to 10th] [English Medium]',
     },
@@ -187,25 +191,6 @@ const HomeScreen = ({navigation}) => {
   }, []);
   const checkDeviceIds = () => {
     console.log(deviceId);
-    //console.log(user?.userData?.device_id);
-    // if (user?.userData?.device_id != deviceId) {
-    //   Alert.alert(
-    //     'Your Number is Already signed in another device. ',
-    //     'Click OK to Login Again',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //         onPress: () => navigation.navigate('Login'),
-    //         style: 'cancel',
-    //       },
-    //       {
-    //         text: 'OK',
-    //         onPress: () => navigation.navigate('Login'),
-    //       },
-    //     ],
-    //     {cancelable: false},
-    //   );
-    // }
   };
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -261,11 +246,7 @@ const HomeScreen = ({navigation}) => {
             source={require('../assets/avatars-default-with-backdrop.png')}
           />
           <Text
-            style={[
-              styles.halloFahmiHaecal,
-              styles.textTypo,
-              isDarkMode && styles.darkText,
-            ]}>
+            style={[styles.halloFahmiHaecal, isDarkMode && styles.darkText]}>
             Hello {userData.fname}
           </Text>
         </View>
@@ -285,7 +266,7 @@ const HomeScreen = ({navigation}) => {
 
       <ScrollView horizontal style={styles.scrollBanner}>
         <View style={styles.coursesContainer}>
-          {user?.userData?.payment_status == 'success' &&
+          {user?.userData?.payment_status != 'success' &&
             bannerImages.map((item, index) => {
               return (
                 <View key={index} style={{flex: 1}}>
@@ -309,18 +290,111 @@ const HomeScreen = ({navigation}) => {
       <Text
         style={[
           styles.findACourse,
-          styles.all1Clr,
           isDarkMode && styles.darkText,
+          {marginBottom: 0},
         ]}>
-        Content for You
+        Popular Batches
       </Text>
+      <ScrollView
+        horizontal
+        style={[styles.scrollBanner, {marginTop: 0, marginLeft: 10}]}>
+        <View style={[styles.coursesContainer, {marginVertical: 10}]}>
+          <TouchableOpacity
+            style={styles.PopularCourseCard}
+            onPress={() => {
+              null;
+            }}>
+            <Image
+              style={{
+                width: '99%',
+                padding: 1,
+                height: 180,
+                marginTop: '-7%',
+                marginHorizontal: 2,
+              }}
+              resizeMode="cover"
+              source={require('../assets/course.png')}
+            />
+
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '95%',
+                justifyContent: 'center',
+                marginLeft: 5,
+                marginTop: '-25%',
+              }}>
+              <Text
+                style={{
+                  width: '48%',
+                  paddingHorizontal: 2,
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 14,
+                  color: 'white',
+                  backgroundColor: 'orangered',
+                  borderRadius: 6,
+                  textAlign: 'center',
+                  marginRight: 3,
+                }}>
+                45 Lessons
+              </Text>
+              <Text
+                style={{
+                  width: '48%',
+                  paddingHorizontal: 2,
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 14,
+                  color: 'white',
+                  backgroundColor: 'violet',
+                  borderRadius: 6,
+                  textAlign: 'center',
+                  marginLeft: 3,
+                }}>
+                7999 Rs.
+              </Text>
+            </View>
+
+            <Text
+              style={[
+                styles.PopularCourseCardTitle,
+                isDarkMode && styles.darkText2,
+                ,
+              ]}>
+              Class 5th and class 6th combined
+            </Text>
+            <View style={styles.bottomView}>
+              <Cart width={25} height={25} fill={'white'} />
+              <Text style={styles.textStyle}>Add to Cart</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.PopularCourseCard}
+            onPress={() => {
+              null;
+            }}>
+            <View style={styles.freeTag}>
+              <Text style={{color: '#fff'}}>Free</Text>
+            </View>
+
+            <Image
+              style={styles.courseImage}
+              resizeMode="cover"
+              source={require('../assets/course.png')}
+            />
+            <Text style={[styles.courseTitle, isDarkMode && styles.darkText2]}>
+              Class 5th
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
       {courseData.map(subject => (
         <View key={subject.subject_id}>
           <View style={styles.frameContainer}>
             <View style={styles.learnflexWrapper}>
               <Text
                 style={[
-                  styles.learnflex,
+                  styles.findACourse,
                   styles.timeTypo,
                   isDarkMode && styles.darkText,
                 ]}>
@@ -407,95 +481,6 @@ const HomeScreen = ({navigation}) => {
           </ScrollView>
         </View>
       ))}
-      {/* {courseData.map(subject => (
-        <View key={subject.subject_id}>
-          <View style={styles.frameContainer}>
-            <View style={styles.learnflexWrapper}>
-              <Text
-                style={[
-                  styles.learnflex,
-                  styles.timeTypo,
-                  isDarkMode && styles.darkText,
-                ]}>
-                {subject.subject_name}
-              </Text>
-            </View>
-          </View>
-
-          <ScrollView horizontal style={styles.scrollView}>
-            <View style={styles.coursesContainer}>
-              {subject.lessons.map(lesson => (
-                <TouchableOpacity
-                  style={styles.courseCard}
-                  key={lesson.lesson_id}
-                  onPress={() => {
-                    user?.userData?.payment_status == 'success'
-                      ? alertVideo(
-                          lesson?.lesson_link,
-                          lesson?.lesson_type,
-                          lesson?.lesson_title,
-                          lesson?.course_name,
-                        )
-                      : user?.userData?.payment_status != 'success' &&
-                        lesson?.lecture_fee_type == 'free'
-                      ? alertVideo(
-                          lesson?.lesson_link,
-                          lesson?.lesson_type,
-                          lesson?.lesson_title,
-                          lesson?.course_name,
-                        )
-                      : user?.userData?.payment_status != 'success' &&
-                        lesson?.lecture_fee_type == 'paid' &&
-                        alertPaidLecture();
-                  }}>
-                  {user?.userData?.payment_status != 'success' &&
-                    lesson.lecture_fee_type == 'free' && (
-                      <View style={styles.freeTag}>
-                        <Text style={{color: '#fff'}}>Free</Text>
-                      </View>
-                    )}
-                  <Image
-                    style={styles.courseImage}
-                    resizeMode="cover"
-                    source={{
-                      uri: API_BASE_URL + 'admin/' + lesson.lesson_bg_image,
-                    }}
-                  />
-                  <Text
-                    style={[
-                      styles.courseTitle,
-                      isDarkMode && styles.darkText2,
-                    ]}>
-                    {lesson.lesson_title}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <TouchableOpacity
-              style={styles.seeMoreBtn}
-              onPressIn={() => {
-                navigation.navigate('AllLectures', {
-                  subjectName: subject?.subject_name,
-                  subjectId: subject?.subject_id,
-                });
-              }}>
-              {user?.userData?.payment_status == 'success' && (
-                <View style={styles.learnflexWrapper}>
-                  <Text
-                    style={[
-                      styles.learnflex,
-                      styles.seeMoreText,
-                      isDarkMode && styles.darkText,
-                    ]}>
-                    See More
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      ))} */}
       <TouchableOpacity
         style={styles.frameContainer}
         onPress={() => {
@@ -518,12 +503,7 @@ const HomeScreen = ({navigation}) => {
       </TouchableOpacity>
       <View style={styles.frameContainer}>
         <View style={styles.learnflexWrapper}>
-          <Text
-            style={[
-              styles.learnflex,
-              styles.timeTypo,
-              isDarkMode && styles.darkText,
-            ]}>
+          <Text style={[styles.learnflex, isDarkMode && styles.darkText]}>
             Teaching Staff
           </Text>
         </View>
@@ -548,11 +528,27 @@ const HomeScreen = ({navigation}) => {
                     resizeMode="cover"
                     source={selectedStaff.image}
                   />
-                  <Text style={styles.modalStaffTitle}>
+                  <Text
+                    style={[
+                      styles.modalStaffTitle,
+                      isDarkMode && styles.darkText,
+                    ]}>
                     {selectedStaff.title}
                   </Text>
-                  <Text style={styles.modalStaffEdu}>{selectedStaff.edu}</Text>
-                  <Text style={styles.modalStaffsub}>{selectedStaff.sub}</Text>
+                  <Text
+                    style={[
+                      styles.modalStaffEdu,
+                      isDarkMode && styles.darkText,
+                    ]}>
+                    {selectedStaff.edu}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.modalStaffsub,
+                      isDarkMode && styles.darkText,
+                    ]}>
+                    {selectedStaff.sub}
+                  </Text>
                 </View>
               )}
               <TouchableOpacity
@@ -576,11 +572,8 @@ const HomeScreen = ({navigation}) => {
                   source={item.image}
                 />
                 <Text
-                  style={[styles.staffTitle, isDarkMode && styles.darkText2]}>
+                  style={[styles.staffTitle, isDarkMode && styles.darkText]}>
                   {item.title}
-                </Text>
-                <Text style={[styles.staffedu, isDarkMode && styles.darkText2]}>
-                  {item.edu}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -594,7 +587,7 @@ const HomeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   home: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
   },
   darkBackground: {
     backgroundColor: '#000',
@@ -616,7 +609,8 @@ const styles = StyleSheet.create({
   halloFahmiHaecal: {
     marginLeft: 12,
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'Poppins-Medium',
+    color: 'black',
   },
   iconlyWrapper: {
     padding: 3,
@@ -630,10 +624,11 @@ const styles = StyleSheet.create({
   },
   findACourse: {
     marginTop: '2%',
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
     paddingHorizontal: 16,
     marginBottom: 20,
+    fontFamily: 'Poppins-SemiBold',
+    color: 'black',
   },
   frameContainer: {
     flexDirection: 'row',
@@ -657,8 +652,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   learnflex: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 22,
+    fontFamily: 'Poppins-Bold',
+
+    color: 'black',
   },
   seeAll: {
     fontSize: 14,
@@ -681,6 +678,28 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     padding: 16,
+  },
+  bottomView: {
+    width: '100%',
+    height: 30,
+    backgroundColor: primaryBg,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'absolute', //Here is the trick
+    bottom: 0, //Here is the trick
+    borderRadius: 5,
+    flexDirection: 'row',
+    paddingHorizontal: '15%',
+  },
+  textStyle: {
+    color: '#fff',
+    fontSize: 15,
+    fontFamily: 'Poppins-SemiBold',
+    alignContent: 'flex-start',
+    fontWeight: 500,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginLeft: '2%',
   },
   image19Wrapper: {
     width: 64,
@@ -744,6 +763,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
   },
+  PopularCourseCard: {
+    marginRight: 12,
+    width: 190,
+    height: 260,
+    borderRadius: 12,
+    backgroundColor: 'white',
+    padding: 0,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+  },
   courseCard: {
     marginRight: 12,
     width: 120,
@@ -766,9 +802,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   courseImage: {
-    width: '100%',
+    width: 100,
     height: 100,
     borderRadius: 8,
+  },
+  PopularCourseCardTitle: {
+    marginTop: 5,
+    fontSize: 18,
+    marginHorizontal: '10%',
+    lineHeight: 25,
+    textAlign: 'left',
+    flexWrap: 'wrap',
+    fontFamily: 'Poppins-Bold',
+    color: 'black',
+    fontWeight: 200,
+  },
+  courseScrollTitle: {
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   courseTitle: {
     marginTop: 8,
@@ -785,7 +838,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   darkText2: {
-    color: '#000',
+    color: '#fff',
   },
   staffContainer: {
     flexDirection: 'row',
@@ -794,22 +847,27 @@ const styles = StyleSheet.create({
   },
   staffCard: {
     marginRight: 16,
-    width: 180,
-    height: 200,
-    borderRadius: 16,
-    backgroundColor: '#F4F4F4',
-    padding: 12,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'black',
+    marginBottom: 60,
+    borderWidth: 5,
   },
   staffImage: {
-    width: '100%',
-    height: 120,
-    borderRadius: 8,
+    width: 90,
+    height: 90,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: 'white',
   },
   staffTitle: {
     marginTop: 8,
     fontSize: 14,
     textAlign: 'center',
-    fontWeight: '900',
+    fontFamily: 'Poppins-SemiBold',
+    flexShrink: 1,
+    color: 'black',
   },
   staffedu: {
     fontSize: 10,
@@ -853,19 +911,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '900',
     marginTop: 18,
+    fontFamily: 'Poppins-Regular',
+    color: 'black',
   },
   modalStaffEdu: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Poppins-Regular',
     marginTop: 8,
     textAlign: 'center',
     marginTop: 2,
+    color: 'black',
   },
   modalStaffsub: {
     fontSize: 16,
     fontWeight: '500',
     marginTop: '2%',
     textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
+    color: 'black',
   },
 
   loaderContainer: {

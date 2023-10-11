@@ -4,17 +4,15 @@ import {RefreshControl, ScrollView, BackHandler} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {API_BASE_URL} from '../utils/api';
 
-const PaymentScreen = ({navigation}) => {
+const PaymentScreen = ({navigation, route}) => {
   const {user} = useContext(AuthContext);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshCount, setRefreshCount] = useState(0);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setRefreshCount(refreshCount + 1);
     setRefreshing(false);
   }, [refreshCount]);
-
   const data = [
     {
       userDetails: user,
@@ -23,11 +21,17 @@ const PaymentScreen = ({navigation}) => {
   ];
 
   // Construct the WebView URL with query parameters
-  const webViewUrl = `${API_BASE_URL}pay/cart.php?data=${encodeURIComponent(
-    JSON.stringify(data),
-  )}`;
+  let webViewUrl = '';
+  if (route?.params?.buyCourse !== undefined) {
+    webViewUrl = `http://192.168.1.34/nexus/pay/index.php?userID=${
+      user?.userID
+    }&randomString=${Math.random()}`;
+  } else {
+    webViewUrl = `http://192.168.1.34/nexus/pay/cart.php?data=${encodeURIComponent(
+      JSON.stringify(data),
+    )}`;
+  }
   console.log(webViewUrl);
-
   useEffect(() => {
     const backAction = () => {
       setRefreshCount(0); // Reset refreshCount when navigating back

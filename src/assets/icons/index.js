@@ -20,26 +20,40 @@ import Person from './Person';
 import Send from './Send';
 import NetworkIcon from './NetworkIcon';
 import Calendar from './Calendar';
+import Cart from './Cart';
+import CourseSelect from './CourseSelect';
+import CartIcon from './CartIcon';
+import ContactUsIcon from './ContactUsIcon';
+import SettingIcon from './SettingIcon';
+import Logout from './Logout';
+import DefaultProfile from './DefaultProfile';
 export {
- MicOff,
- MicOn,
- VideoOff,
- VideoOn,
- CallEnd,
- CameraSwitch,
- Copy,
- ScreenShare,
- DownArrow,
- Chat,
- More,
- RaiseHand,
- Person,
- Send,
- EndForAll,
- Leave,
- Recording,
- Participants,
- NetworkIcon,
- Calendar,
- Home,
+  MicOff,
+  MicOn,
+  VideoOff,
+  VideoOn,
+  CallEnd,
+  CameraSwitch,
+  Copy,
+  ScreenShare,
+  DownArrow,
+  Chat,
+  More,
+  RaiseHand,
+  Person,
+  Send,
+  EndForAll,
+  Leave,
+  Recording,
+  Participants,
+  NetworkIcon,
+  Calendar,
+  Home,
+  Cart,
+  CourseSelect,
+  CartIcon,
+  ContactUsIcon,
+  SettingIcon,
+  Logout,
+  DefaultProfile,
 };

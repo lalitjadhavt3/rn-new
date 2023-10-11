@@ -1,9 +1,10 @@
 /* fonts */
+import {StyleSheet} from 'react-native';
 export const FontFamily = {
-  footnoteBold: "SF Pro Display_semibold",
-  caption2Regular: "SF Pro Display_regular",
-  caption1Bold: "SF Pro Display_medium",
-  title2Bold: "SF Pro Display_bold",
+  footnoteBold: 'SF Pro Display_semibold',
+  caption2Regular: 'SF Pro Display_regular',
+  caption1Bold: 'SF Pro Display_medium',
+  title2Bold: 'SF Pro Display_bold',
 };
 /* font sizes */
 export const FontSize = {
@@ -18,17 +19,18 @@ export const FontSize = {
 };
 /* Colors */
 export const Color = {
-  white: "#fff",
-  systemColoursDefaultColorsSystemWhiteBlackDark: "#000",
-  greySecondary: "#acacac",
-  greyPrimary: "#969696",
-  primaryBlue: "#185dcf",
-  black: "#2e2e2e",
-  greyText: "#626262",
-  aliceblue: "#f4fbff",
-  greyBackground: "#f5f5f5",
+  white: '#fff',
+  systemColoursDefaultColorsSystemWhiteBlackDark: '#000',
+  greySecondary: '#acacac',
+  greyPrimary: '#969696',
+  primaryBlue: '#185dcf',
+  black: '#2e2e2e',
+  greyText: '#626262',
+  aliceblue: '#f4fbff',
+  greyBackground: '#f5f5f5',
 };
 /* Paddings */
+export const primaryBg = '#5A6DF9';
 export const Padding = {
   p_6xl_9: 26,
   p_sm_4: 13,
@@ -48,3 +50,14 @@ export const Border = {
   br_6xs_9: 7,
   br_3xs: 10,
 };
+// styles.js
+
+export const globalStyles = StyleSheet.create({
+  text: {
+    fontFamily: 'Poppins-Bold', // Replace with your font's name
+  },
+
+  secondaryBg: {
+    backgroundColor: '#FF725E',
+  },
+});

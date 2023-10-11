@@ -6,7 +6,6 @@ import codePush from 'react-native-code-push';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import {Alert, Linking} from 'react-native';
 import VersionCheck from 'react-native-version-check';
-
 // OneSignal Initialization
 
 const codePushOptions = {

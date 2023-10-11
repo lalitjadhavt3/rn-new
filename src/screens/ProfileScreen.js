@@ -13,11 +13,24 @@ import {
 import {AuthContext} from '../context/AuthContext';
 import {BackHandler} from 'react-native';
 import CourseModal from '../components/CourseModal';
+import {
+  CartIcon,
+  ContactUsIcon,
+  CourseSelect,
+  SettingIcon,
+  Logout,
+  DefaultProfile,
+} from '../assets/icons';
 
 const UserAccountSection = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [contactModalVisible, setContactModalVisible] = useState(false);
-
+  const IconButton = ({iconSource, text, onPress}) => (
+    <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+      {iconSource}
+      <Text style={styles.buttonText}>{text}</Text>
+    </TouchableOpacity>
+  );
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -46,32 +59,42 @@ const UserAccountSection = ({navigation, route}) => {
     <View style={styles.container}>
       {user ? (
         <>
-          <Image
-            source={require('../assets/profile.png')}
-            style={styles.logo}
+          <View style={styles.ImageContainer}>
+            <DefaultProfile />
+            <Text style={styles.title}>Welcome {user?.userData?.fname}</Text>
+          </View>
+          <IconButton
+            iconSource={<SettingIcon style={styles.icon} />}
+            text="Edit Profile"
+            onPressIn={() => {
+              Alert.alert('This functionality is under construction');
+            }}
           />
-          <Text style={styles.title}>Welcome!</Text>
-          <TouchableOpacity style={styles.button} onPress={toggleModal}>
-            <Text style={styles.buttonText}>Select Course</Text>
-          </TouchableOpacity>
+          <IconButton
+            iconSource={<CourseSelect style={styles.icon} />}
+            text="Select Course"
+            onPress={toggleModal}
+          />
           <CourseModal
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
           />
-
-          <TouchableOpacity
-            style={styles.button}
+          <IconButton
+            iconSource={<CartIcon style={styles.icon} />}
+            text="Buy New Course(s)"
             onPress={() => {
-              navigation.navigate('ResetPasswordScreen');
-            }}>
-            <Text style={styles.buttonText}>Reset Password</Text>
-          </TouchableOpacity>
+              navigation.navigate('Payment', {buyCourse: true});
+            }}
+          />
+          <IconButton
+            iconSource={<ContactUsIcon style={styles.icon} />}
+            text="Contact Us"
+            onPress={toggleContactModal}
+          />
           <TouchableOpacity
-            style={styles.contactButton}
-            onPress={toggleContactModal}>
-            <Text style={styles.buttonText}>Contact Us</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
+            style={styles.logoutbuttonContainer}
+            onPress={signOut}>
+            <Logout style={styles.icon} />
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
 
@@ -119,6 +142,13 @@ const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  ImageContainer: {
+    width: '80%',
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -145,9 +175,9 @@ const lightStyles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
   },
-  logo: {
-    width: 300,
-    height: 300,
+  profileImage: {
+    width: 150,
+    height: 150,
     resizeMode: 'contain',
   },
   logoutButton: {
@@ -161,7 +191,7 @@ const lightStyles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#FFFFFF',
+    color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -209,6 +239,53 @@ const lightStyles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     alignContent: 'center',
+  },
+  logoutbuttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#ff5722',
+    width: '90%',
+    height: 55,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: 'white',
+    width: '90%',
+    height: 55,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+  },
+  icon: {
+    marginRight: 10, // Adjust the margin as needed
+    width: 30, // Set the width of the icon
+    height: 30, // Set the height of the icon
   },
 });
 
